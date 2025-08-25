@@ -1,21 +1,50 @@
 {
-  "name": "random-learner",
-  "version": "1.0.0",
-  "description": "A learning app that shows random popup questions to help users learn on-the-go",
+  "name": "@codejoy/random-learner",
+  "version": "1.0.2",
+  "description": "An intelligent learning companion that displays random popup quiz questions with AI-powered content generation to help users learn programming concepts on-the-go",
   "main": "src/index.js",
+  "bin": {
+    "random-learner": "bin/random-learner.js"
+  },
   "scripts": {
     "start": "electron src/index.js",
-    "dev": "nodemon --exec electron src/index.js"
+    "dev": "nodemon --exec electron src/index.js",
+    "build": "echo \"Build completed\"",
+    "test": "echo \"No tests specified\" && exit 0",
+    "prepublishOnly": "npm test",
+    "postinstall": "echo \"Random Learner installed successfully! Run 'random-learner' to start.\""
   },
   "keywords": [
     "learning",
     "quiz",
     "education",
     "random",
-    "popup"
+    "popup",
+    "ai",
+    "programming",
+    "electron",
+    "desktop-app",
+    "openai",
+    "gemini",
+    "questions",
+    "study",
+    "coding",
+    "java",
+    "python",
+    "database",
+    "oop",
+    "artificial-intelligence"
   ],
-  "author": "",
+  "author": "CodeJoy <support@codejoy.dev>",
   "license": "MIT",
+  "homepage": "https://github.com/SujithKandamuri/lerner#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SujithKandamuri/lerner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SujithKandamuri/lerner/issues"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "electron": "^26.0.0",
@@ -24,6 +53,19 @@
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {
+    "electron-builder": "^24.13.3",
     "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "os": [
+    "darwin",
+    "win32",
+    "linux"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

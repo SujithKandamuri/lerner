@@ -1,0 +1,68 @@
+# Development files
+.DS_Store
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache and temporary files
+.cache/
+.temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Development dependencies
+nodemon.json
+.nodemonrc
+
+# Git files
+.git/
+.gitignore
+
+# Documentation that's not needed in package
+docs/
+screenshots/
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+coverage/
+
+# Build artifacts (if any)
+build/
+dist/
+out/
+
+# Electron builder output
+release/
+
+# Personal cache and data files
+ai-questions-cache.json
+*-questions-cache.json
+question-cache*.json
+
+# User data and settings
+config.json
+settings.json
+user-preferences.json
+electron-store/
+
+# API keys and sensitive data
+*.key
+*.secret
+.env*
+secrets.json
+credentials.json
+
+# Sample files (keep these for users)
+!sample-cache-format.json
+
+# OS specific files
+Thumbs.db
+Desktop.ini

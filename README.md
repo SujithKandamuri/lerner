@@ -1,6 +1,40 @@
 # Random Learner 🧠
 
+[![npm version](https://badge.fury.io/js/%40codejoy%2Frandom-learner.svg)](https://badge.fury.io/js/%40codejoy%2Frandom-learner)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen)](https://nodejs.org/)
+
 A powerful desktop application that helps busy learners by showing random popup questions at intervals. Perfect for those who don't have time to sit down for dedicated study sessions but want to learn on-the-go!
+
+## 📦 Installation
+
+### Option 1: Install via npm (Recommended)
+
+```bash
+npm install -g @codejoy/random-learner
+```
+
+Then run:
+```bash
+random-learner
+```
+
+### Option 2: Clone and Run Locally
+
+```bash
+git clone https://github.com/codejoy-org/random-learner.git
+cd random-learner
+npm install
+npm start
+```
+
+## 🚀 Quick Start
+
+1. **Install the app**: `npm install -g @codejoy/random-learner`
+2. **Run it**: `random-learner`
+3. **Configure**: Right-click the tray icon → Settings
+4. **Add AI**: Enter your OpenAI or Gemini API key (optional)
+5. **Learn**: Questions will start appearing automatically!
 
 ## ✨ Features
 
@@ -181,9 +215,43 @@ Feel free to contribute by:
 - **Mobile App**: Companion mobile application
 - **Plugin System**: Extensible architecture for custom features
 
-## License
+## 📄 License
 
-MIT License - feel free to use and modify as needed!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🚀 Publishing & Development
+
+### Development Setup
+
+```bash
+git clone https://github.com/codejoy-org/random-learner.git
+cd random-learner
+npm install
+npm run dev  # Runs with nodemon for auto-restart
+```
+
+### Publishing to npm
+
+```bash
+# Build and test
+npm run build
+npm test
+
+# Publish (requires @codejoy npm organization access)
+npm publish
+```
+
+## 🙏 Acknowledgments
+
+- Built with Electron for cross-platform desktop support
+- Uses OpenAI GPT and Google Gemini for intelligent question generation
+- Inspired by the need for continuous learning in our busy lives
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/codejoy-org/random-learner/issues)
+- **Email**: support@codejoy.dev
+- **NPM Package**: [@codejoy/random-learner](https://www.npmjs.com/package/@codejoy/random-learner)
 
 ---
 
