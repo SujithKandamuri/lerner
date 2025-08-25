@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Sample AI Generated Questions Cache Format - Copy to ai-questions-cache.json to use",
+    "created": "2024-01-01T00:00:00.000Z",
+    "lastUpdated": "2024-01-01T00:00:00.000Z",
+    "totalQuestions": 2,
+    "instructions": {
+      "How to use this file": [
+        "1. Copy this file to 'ai-questions-cache.json' in the same directory",
+        "2. The app will automatically create ai-questions-cache.json if it doesn't exist",
+        "3. Add your own questions to the 'questions' array following the format below",
+        "4. AI-generated questions will be automatically added when you use the AI features"
+      ],
+      "Manual question format": {
+        "id": "unique_id_string",
+        "question": "Your question text here?",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correct": 0,
+        "explanation": "Explanation of the correct answer",
+        "topic": "topic_name",
+        "level": "beginner|intermediate|advanced", 
+        "source": "manual",
+        "generated_at": "2024-01-01T00:00:00.000Z"
+      }
+    }
+  },
+  "questions": [
+    {
+      "id": "sample_java_basic_001",
+      "question": "What is the main method signature in Java?",
+      "options": [
+        "public static void main(String[] args)",
+        "public void main(String[] args)",
+        "static void main(String[] args)",
+        "public static main(String[] args)"
+      ],
+      "correct": 0,
+      "explanation": "The main method in Java must be public, static, void, and take a String array as parameter.",
+      "topic": "java",
+      "level": "beginner",
+      "source": "manual",
+      "generated_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "sample_python_intermediate_001",
+      "question": "What is the difference between '==' and 'is' in Python?",
+      "options": [
+        "They are exactly the same",
+        "'==' compares values, 'is' compares identity (memory location)",
+        "'is' compares values, '==' compares identity", 
+        "'is' is used for numbers, '==' for strings"
+      ],
+      "correct": 1,
+      "explanation": "'==' compares the values of objects for equality, while 'is' compares whether two variables refer to the same object in memory.",
+      "topic": "python",
+      "level": "intermediate",
+      "source": "manual",
+      "generated_at": "2024-01-01T00:00:00.000Z"
+    }
+  ]
+}

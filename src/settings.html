@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Learner Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: min(1200px, 95vw);
+            width: 95%;
+            margin: 0 auto;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* Responsive design for larger screens */
+        @media (min-width: 768px) {
+            .container {
+                width: 90%;
+                max-width: 1400px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                width: 85%;
+                max-width: 1600px;
+            }
+        }
+        
+        @media (min-width: 1600px) {
+            .container {
+                width: 80%;
+                max-width: 1800px;
+            }
+            
+            /* Two-column layout for very wide screens */
+            .settings-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            /* Make certain sections span full width */
+            .settings-section.full-width {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        
+        .header-logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 15px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: white;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header-logo img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1em;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fafafa;
+        }
+        
+        /* Responsive typography and spacing */
+        @media (min-width: 768px) {
+            .settings-section {
+                padding: 30px;
+                margin-bottom: 35px;
+            }
+            
+            .section-title {
+                font-size: 1.3em;
+            }
+            
+            .form-group label {
+                font-size: 1.05em;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            
+            input, select, textarea {
+                font-size: 1em;
+                padding: 10px 12px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                padding: 40px;
+            }
+            
+            .settings-section {
+                padding: 35px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .section-title {
+                font-size: 1.4em;
+            }
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 5px;
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        
+        .range-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .range-group input {
+            width: 100px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c53030;
+        }
+        
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #2f855a;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .status-message.success {
+            background: #c6f6d5;
+            border: 1px solid #38a169;
+            color: #22543d;
+        }
+        
+        .status-message.error {
+            background: #fed7d7;
+            border: 1px solid #e53e3e;
+            color: #742a2a;
+        }
+        
+        /* Pause/Resume Styles */
+        .pause-resume-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border: 2px solid #e0e7ff;
+        }
+        
+        #pause-resume-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 160px;
+            justify-content: center;
+        }
+        
+        #pause-resume-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        #pause-resume-btn.paused {
+            background: #10b981;
+            color: white;
+        }
+        
+        #pause-resume-btn.paused:hover {
+            background: #059669;
+        }
+        
+        .pause-status {
+            flex: 1;
+        }
+        
+        #pause-status-text {
+            font-size: 1em;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        
+        #pause-status-text.paused {
+            color: #d97706;
+            font-weight: 600;
+        }
+        
+        .status-message.info {
+            background: #bee3f8;
+            border: 1px solid #3182ce;
+            color: #2a4365;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .prompt-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .connection-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .connection-status.connected {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .connection-status.disconnected {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '...'; }
+            40% { content: '....'; }
+            60%, 100% { content: '.....'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-logo">
+                <img src="icons/app-icon.png" alt="Random Learner Logo" id="header-logo-img">
+            </div>
+            <h1>Random Learner Settings</h1>
+            <p>Customize your learning experience</p>
+        </div>
+        
+        <div id="status-message" class="status-message"></div>
+        
+        <div class="settings-grid">
+        
+        <!-- Question Scheduling Control -->
+        <div class="settings-section">
+            <div class="section-title">⏯️ Question Scheduling</div>
+            
+            <div class="form-group">
+                <div class="pause-resume-container">
+                    <button id="pause-resume-btn" class="btn btn-primary">
+                        <span id="pause-resume-icon">⏸️</span>
+                        <span id="pause-resume-text">Pause Questions</span>
+                    </button>
+                    <div id="pause-status" class="pause-status">
+                        <span id="pause-status-text">Questions are active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Provider Settings -->
+        <div class="settings-section full-width">
+            <div class="section-title">
+                🤖 AI Integration
+                <span id="connection-status" class="connection-status disconnected">Not Connected</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="ai-provider">AI Provider</label>
+                <select id="ai-provider">
+                    <option value="openai">OpenAI (GPT-3.5/GPT-4)</option>
+                    <option value="gemini">Google Gemini</option>
+                </select>
+                <div class="help-text">
+                    Choose your preferred AI provider for question generation and answer validation.
+                </div>
+            </div>
+            
+            <div class="form-group" id="openai-settings">
+                <label for="openai-api-key">OpenAI API Key</label>
+                <div style="position: relative;">
+                    <input type="password" id="openai-api-key" placeholder="sk-..." autocomplete="off" spellcheck="false" style="padding-right: 50px;">
+                    <button type="button" id="toggle-openai-key" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.2em;">👁️</button>
+                </div>
+                <div class="help-text">
+                    Enter your OpenAI API key to enable AI-generated questions. 
+                    <a href="https://platform.openai.com/api-keys" target="_blank">Get your API key here</a>
+                    <br><small>💡 Tip: You can paste your API key using Ctrl+V (Cmd+V on Mac) or click the eye icon to show/hide</small>
+                </div>
+            </div>
+            
+            <div class="form-group" id="gemini-settings" style="display: none;">
+                <label for="gemini-api-key">Gemini API Key</label>
+                <div style="position: relative;">
+                    <input type="password" id="gemini-api-key" placeholder="..." autocomplete="off" spellcheck="false" style="padding-right: 50px;">
+                    <button type="button" id="toggle-gemini-key" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.2em;">👁️</button>
+                </div>
+                <div class="help-text">
+                    Enter your Gemini API key to enable AI-generated questions. 
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank">Get your API key here</a>
+                    <br><small>💡 Tip: You can paste your API key using Ctrl+V (Cmd+V on Mac) or click the eye icon to show/hide</small>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="custom-prompt">Custom Prompt for Question Generation</label>
+                <textarea id="custom-prompt" placeholder="Enter your custom prompt here..."></textarea>
+                <div class="help-text">
+                    Customize how AI generates questions. Use {topic} and {level} as placeholders.
+                </div>
+                <div class="prompt-actions">
+                    <button type="button" class="btn btn-secondary" id="show-default-prompt">Show Default Prompt</button>
+                    <button type="button" class="btn btn-secondary" id="reset-prompt">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question Settings -->
+        <div class="settings-section">
+            <div class="section-title">📚 Question Preferences</div>
+            
+            <div class="form-group">
+                <label>Preferred Topics</label>
+                <div class="checkbox-group" id="topics-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic-oops" value="oops">
+                        <label for="topic-oops">Object-Oriented Programming</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic-java" value="java">
+                        <label for="topic-java">Java</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic-python" value="python">
+                        <label for="topic-python">Python</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic-ai" value="ai">
+                        <label for="topic-ai">Artificial Intelligence</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic-databases" value="databases">
+                        <label for="topic-databases">Databases</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Preferred Difficulty Levels</label>
+                <div class="checkbox-group" id="levels-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-beginner" value="beginner">
+                        <label for="level-beginner">Beginner</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-intermediate" value="intermediate">
+                        <label for="level-intermediate">Intermediate</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-advanced" value="advanced">
+                        <label for="level-advanced">Advanced</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="use-ai"> Use AI for question generation
+                </label>
+                <div class="help-text">
+                    When enabled, the app will generate questions using the selected AI provider in addition to the built-in question bank.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timing Settings -->
+        <div class="settings-section">
+            <div class="section-title">⏰ Timing Settings</div>
+            
+            <div class="form-group">
+                <label>Question Popup Interval (minutes)</label>
+                <div class="range-group">
+                    <span>Min:</span>
+                    <input type="number" id="min-interval" min="1" max="60" value="2">
+                    <span>Max:</span>
+                    <input type="number" id="max-interval" min="1" max="120" value="10">
+                </div>
+                <div class="help-text">
+                    Questions will appear randomly between the minimum and maximum intervals.
+                </div>
+            </div>
+        </div>
+        
+        <!-- UI Settings -->
+        <div class="settings-section">
+            <div class="section-title">🎨 Interface Settings</div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="always-on-top"> Question windows always on top
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="auto-close"> Auto-close windows after showing results
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label for="auto-close-delay">Auto-close delay (seconds)</label>
+                <input type="number" id="auto-close-delay" min="1" max="30" value="5">
+            </div>
+        </div>
+        
+        <!-- Question Cache Management -->
+        <div class="settings-section full-width">
+            <div class="section-title">💾 Question Cache Management</div>
+            
+            <div class="form-group">
+                <div id="cache-stats" class="help-text">
+                    Loading cache statistics...
+                </div>
+                <button type="button" class="btn btn-info" id="refresh-cache-stats" style="margin-top: 10px; padding: 5px 10px; font-size: 0.9em;">🔄 Refresh Statistics</button>
+            </div>
+            
+            <div class="form-group">
+                <div class="help-text">
+                    AI-generated questions are automatically saved to a local JSON file (<code>ai-questions-cache.json</code>) in your project directory. 
+                    This file can be manually edited to add your own questions and serves as a backup when AI providers are unavailable.
+                    <br><br>
+                    <strong>File Location:</strong> <code>ai-questions-cache.json</code> (in the app directory)
+                    <br>
+                    <strong>Manual Editing:</strong> Follow the format shown in the file's instructions section.
+                </div>
+            </div>
+        </div>
+        
+        </div> <!-- End settings-grid -->
+
+        <div class="buttons">
+            <button type="button" class="btn btn-primary" id="save-settings">Save Settings</button>
+            <button type="button" class="btn btn-secondary" id="test-ai">Test AI Connection</button>
+            <button type="button" class="btn btn-success" id="generate-test-question">Generate Test Question</button>
+            <button type="button" class="btn btn-secondary" id="export-settings">Export Settings</button>
+            <button type="button" class="btn btn-secondary" id="import-settings">Import Settings</button>
+            <button type="button" class="btn btn-info" id="export-cache">Export Question Cache</button>
+            <button type="button" class="btn btn-warning" id="clear-cache">Clear Question Cache</button>
+            <button type="button" class="btn btn-danger" id="reset-settings">Reset to Defaults</button>
+        </div>
+        
+        <input type="file" id="import-file" style="display: none" accept=".json">
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        // DOM elements
+        const elements = {
+            pauseResumeBtn: document.getElementById('pause-resume-btn'),
+            pauseResumeIcon: document.getElementById('pause-resume-icon'),
+            pauseResumeText: document.getElementById('pause-resume-text'),
+            pauseStatusText: document.getElementById('pause-status-text'),
+            aiProvider: document.getElementById('ai-provider'),
+            openaiApiKey: document.getElementById('openai-api-key'),
+            geminiApiKey: document.getElementById('gemini-api-key'),
+            customPrompt: document.getElementById('custom-prompt'),
+            connectionStatus: document.getElementById('connection-status'),
+            statusMessage: document.getElementById('status-message'),
+            useAI: document.getElementById('use-ai'),
+            minInterval: document.getElementById('min-interval'),
+            maxInterval: document.getElementById('max-interval'),
+            alwaysOnTop: document.getElementById('always-on-top'),
+            autoClose: document.getElementById('auto-close'),
+            autoCloseDelay: document.getElementById('auto-close-delay'),
+            openaiSettings: document.getElementById('openai-settings'),
+            geminiSettings: document.getElementById('gemini-settings')
+        };
+        
+        // Update pause/resume button state
+        async function updatePauseStatus() {
+            try {
+                const status = await ipcRenderer.invoke('get-pause-status');
+                updatePauseStatusUI(status.paused);
+            } catch (error) {
+                console.error('Failed to update pause status:', error);
+            }
+        }
+
+        // Initialize settings page
+        async function initializeSettings() {
+            try {
+                const settings = await ipcRenderer.invoke('get-settings');
+                loadSettingsToUI(settings);
+                updateConnectionStatus(settings);
+                await updatePauseStatus();
+            } catch (error) {
+                showStatus('Failed to load settings', 'error');
+            }
+        }
+        
+        function loadSettingsToUI(settings) {
+            // AI Provider settings
+            elements.aiProvider.value = settings.aiProvider || 'openai';
+            elements.openaiApiKey.value = settings.openaiApiKey || '';
+            elements.geminiApiKey.value = settings.geminiApiKey || '';
+            elements.customPrompt.value = settings.customPrompt || '';
+            
+            // Show/hide provider-specific settings
+            toggleProviderSettings(settings.aiProvider || 'openai');
+            
+            // Question settings - auto-enable AI if keys are present
+            const hasAIKey = (settings.aiProvider === 'gemini' && settings.geminiApiKey) || 
+                            (settings.aiProvider === 'openai' && settings.openaiApiKey) ||
+                            settings.openaiApiKey; // fallback for legacy
+            elements.useAI.checked = settings.questionSettings.useAI || settings.questionSettings.useOpenAI || hasAIKey;
+            
+            // Load preferred topics
+            settings.questionSettings.preferredTopics.forEach(topic => {
+                const checkbox = document.getElementById(`topic-${topic}`);
+                if (checkbox) checkbox.checked = true;
+            });
+            
+            // Load preferred levels
+            settings.questionSettings.preferredLevels.forEach(level => {
+                const checkbox = document.getElementById(`level-${level}`);
+                if (checkbox) checkbox.checked = true;
+            });
+            
+            // Timing settings
+            elements.minInterval.value = settings.timingSettings.minInterval / (60 * 1000);
+            elements.maxInterval.value = settings.timingSettings.maxInterval / (60 * 1000);
+            
+            // UI settings
+            elements.alwaysOnTop.checked = settings.uiSettings.alwaysOnTop;
+            elements.autoClose.checked = settings.uiSettings.autoClose;
+            elements.autoCloseDelay.value = settings.uiSettings.autoCloseDelay / 1000;
+        }
+        
+        function toggleProviderSettings(provider) {
+            if (provider === 'gemini') {
+                elements.openaiSettings.style.display = 'none';
+                elements.geminiSettings.style.display = 'block';
+            } else {
+                elements.openaiSettings.style.display = 'block';
+                elements.geminiSettings.style.display = 'none';
+            }
+        }
+        
+        function updateConnectionStatus(settings) {
+            const provider = settings.aiProvider || 'openai';
+            let apiKey;
+            if (provider === 'gemini') {
+                apiKey = settings.geminiApiKey;
+            } else {
+                apiKey = settings.openaiApiKey;
+            }
+            
+            const isConnected = apiKey && apiKey.trim().length > 0;
+            elements.connectionStatus.textContent = isConnected ? `Connected (${provider.toUpperCase()})` : 'Not Connected';
+            elements.connectionStatus.className = `connection-status ${isConnected ? 'connected' : 'disconnected'}`;
+        }
+        
+        function showStatus(message, type = 'info') {
+            elements.statusMessage.textContent = message;
+            elements.statusMessage.className = `status-message ${type}`;
+            elements.statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                elements.statusMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function getSettingsFromUI() {
+            // Get selected topics
+            const preferredTopics = [];
+            document.querySelectorAll('#topics-group input[type="checkbox"]:checked').forEach(cb => {
+                preferredTopics.push(cb.value);
+            });
+            
+            // Get selected levels
+            const preferredLevels = [];
+            document.querySelectorAll('#levels-group input[type="checkbox"]:checked').forEach(cb => {
+                preferredLevels.push(cb.value);
+            });
+            
+            return {
+                aiProvider: elements.aiProvider.value,
+                openaiApiKey: elements.openaiApiKey.value.trim(),
+                geminiApiKey: elements.geminiApiKey.value.trim(),
+                customPrompt: elements.customPrompt.value.trim(),
+                questionSettings: {
+                    preferredTopics,
+                    preferredLevels,
+                    useAI: elements.useAI.checked,
+                    mixStaticAndAI: true
+                },
+                timingSettings: {
+                    minInterval: parseInt(elements.minInterval.value) * 60 * 1000,
+                    maxInterval: parseInt(elements.maxInterval.value) * 60 * 1000
+                },
+                uiSettings: {
+                    alwaysOnTop: elements.alwaysOnTop.checked,
+                    autoClose: elements.autoClose.checked,
+                    autoCloseDelay: parseInt(elements.autoCloseDelay.value) * 1000
+                }
+            };
+        }
+        
+        // Event listeners
+        
+        // Pause/Resume functionality
+        elements.pauseResumeBtn.addEventListener('click', async () => {
+            try {
+                const currentStatus = await ipcRenderer.invoke('get-pause-status');
+                const isPaused = currentStatus.paused;
+                
+                if (isPaused) {
+                    const result = await ipcRenderer.invoke('resume-questions');
+                    showStatus('Questions resumed', 'success');
+                    updatePauseStatusUI(result.paused);
+                } else {
+                    const result = await ipcRenderer.invoke('pause-questions');
+                    showStatus('Questions paused', 'info');
+                    updatePauseStatusUI(result.paused);
+                }
+            } catch (error) {
+                console.error('Failed to toggle pause state:', error);
+                showStatus('Failed to update question scheduling', 'error');
+            }
+        });
+        
+        document.getElementById('save-settings').addEventListener('click', async () => {
+            try {
+                const settings = getSettingsFromUI();
+                await ipcRenderer.invoke('save-settings', settings);
+                updateConnectionStatus(settings);
+                showStatus('Settings saved successfully!', 'success');
+            } catch (error) {
+                showStatus('Failed to save settings', 'error');
+            }
+        });
+        
+        document.getElementById('test-ai').addEventListener('click', async () => {
+            const btn = document.getElementById('test-ai');
+            const originalText = btn.textContent;
+            btn.textContent = 'Testing';
+            btn.classList.add('loading');
+            
+            try {
+                const provider = elements.aiProvider.value;
+                let apiKey;
+                if (provider === 'gemini') {
+                    apiKey = elements.geminiApiKey.value.trim();
+                } else {
+                    apiKey = elements.openaiApiKey.value.trim();
+                }
+                
+                if (!apiKey) {
+                    showStatus('Please enter an API key first', 'error');
+                    return;
+                }
+                
+                const result = await ipcRenderer.invoke('test-ai-connection', { provider, apiKey });
+                if (result.success) {
+                    showStatus(`${provider.toUpperCase()} connection successful!`, 'success');
+                    updateConnectionStatus({ aiProvider: provider, [provider + 'ApiKey']: apiKey });
+                } else {
+                    showStatus(`Connection failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('Connection test failed', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.classList.remove('loading');
+            }
+        });
+        
+        document.getElementById('generate-test-question').addEventListener('click', async () => {
+            const btn = document.getElementById('generate-test-question');
+            const originalText = btn.textContent;
+            btn.textContent = 'Generating';
+            btn.classList.add('loading');
+            
+            try {
+                const result = await ipcRenderer.invoke('generate-test-question');
+                if (result.success) {
+                    showStatus(`Test question generated: "${result.question.question}"`, 'success');
+                } else {
+                    showStatus(`Failed to generate question: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('Failed to generate test question', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.classList.remove('loading');
+            }
+        });
+        
+        document.getElementById('show-default-prompt').addEventListener('click', async () => {
+            try {
+                const defaultPrompt = await ipcRenderer.invoke('get-default-prompt');
+                elements.customPrompt.value = defaultPrompt;
+                showStatus('Default prompt loaded into editor', 'info');
+            } catch (error) {
+                showStatus('Failed to load default prompt', 'error');
+            }
+        });
+        
+        document.getElementById('reset-prompt').addEventListener('click', () => {
+            elements.customPrompt.value = '';
+            showStatus('Prompt reset to default', 'info');
+        });
+        
+        document.getElementById('export-settings').addEventListener('click', async () => {
+            try {
+                const settings = await ipcRenderer.invoke('export-settings');
+                const blob = new Blob([settings], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'random-learner-settings.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                showStatus('Settings exported successfully!', 'success');
+            } catch (error) {
+                showStatus('Failed to export settings', 'error');
+            }
+        });
+        
+        document.getElementById('import-settings').addEventListener('click', () => {
+            document.getElementById('import-file').click();
+        });
+        
+        document.getElementById('import-file').addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const result = await ipcRenderer.invoke('import-settings', text);
+                if (result.success) {
+                    showStatus('Settings imported successfully! Reloading...', 'success');
+                    setTimeout(() => {
+                        initializeSettings();
+                    }, 1000);
+                } else {
+                    showStatus(`Failed to import settings: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('Failed to read settings file', 'error');
+            }
+            
+            // Reset file input
+            event.target.value = '';
+        });
+        
+        document.getElementById('reset-settings').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to reset all settings to defaults? This cannot be undone.')) {
+                try {
+                    await ipcRenderer.invoke('reset-settings');
+                    showStatus('Settings reset to defaults! Reloading...', 'success');
+                    setTimeout(() => {
+                        initializeSettings();
+                    }, 1000);
+                } catch (error) {
+                    showStatus('Failed to reset settings', 'error');
+                }
+            }
+        });
+        
+        // Provider change handler
+        elements.aiProvider.addEventListener('change', (e) => {
+            toggleProviderSettings(e.target.value);
+        });
+
+        // Toggle API key visibility for OpenAI
+        document.getElementById('toggle-openai-key').addEventListener('click', () => {
+            const apiKeyInput = elements.openaiApiKey;
+            const toggleBtn = document.getElementById('toggle-openai-key');
+            
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+                toggleBtn.title = 'Hide API key';
+            } else {
+                apiKeyInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+                toggleBtn.title = 'Show API key';
+            }
+        });
+        
+        // Toggle API key visibility for Gemini
+        document.getElementById('toggle-gemini-key').addEventListener('click', () => {
+            const apiKeyInput = elements.geminiApiKey;
+            const toggleBtn = document.getElementById('toggle-gemini-key');
+            
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+                toggleBtn.title = 'Hide API key';
+            } else {
+                apiKeyInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+                toggleBtn.title = 'Show API key';
+            }
+        });
+        
+        // Ensure paste functionality works for OpenAI
+        elements.openaiApiKey.addEventListener('paste', (event) => {
+            setTimeout(() => {
+                elements.openaiApiKey.value = elements.openaiApiKey.value.trim();
+            }, 10);
+        });
+        
+        // Ensure paste functionality works for Gemini
+        elements.geminiApiKey.addEventListener('paste', (event) => {
+            setTimeout(() => {
+                elements.geminiApiKey.value = elements.geminiApiKey.value.trim();
+            }, 10);
+        });
+        
+        // Handle Ctrl+V / Cmd+V for paste - OpenAI
+        elements.openaiApiKey.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
+                setTimeout(() => {
+                    elements.openaiApiKey.value = elements.openaiApiKey.value.trim();
+                }, 10);
+            }
+        });
+        
+        // Handle Ctrl+V / Cmd+V for paste - Gemini
+        elements.geminiApiKey.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
+                setTimeout(() => {
+                    elements.geminiApiKey.value = elements.geminiApiKey.value.trim();
+                }, 10);
+            }
+        });
+        
+        // Cache management event listeners
+        document.getElementById('export-cache').addEventListener('click', async () => {
+            try {
+                const cacheData = await ipcRenderer.invoke('export-cache');
+                const blob = new Blob([cacheData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ai-questions-cache-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showStatus('Question cache exported successfully!', 'success');
+            } catch (error) {
+                showStatus('Failed to export cache', 'error');
+            }
+        });
+
+        document.getElementById('clear-cache').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear all cached questions? This action cannot be undone.')) {
+                try {
+                    await ipcRenderer.invoke('clear-question-cache');
+                    showStatus('Question cache cleared successfully!', 'success');
+                    updateCacheStats();
+                } catch (error) {
+                    showStatus('Failed to clear cache', 'error');
+                }
+            }
+        });
+
+        document.getElementById('refresh-cache-stats').addEventListener('click', async () => {
+            try {
+                // Reload cache from file to get latest data
+                await ipcRenderer.invoke('reload-cache');
+                updateCacheStats();
+                showStatus('Cache statistics refreshed!', 'success');
+            } catch (error) {
+                showStatus('Failed to refresh cache statistics', 'error');
+            }
+        });
+
+        // Function to update cache statistics
+        async function updateCacheStats() {
+            try {
+                const stats = await ipcRenderer.invoke('get-cache-stats');
+                const cacheStatsEl = document.getElementById('cache-stats');
+                
+                let statsHtml = `<strong>Cache Statistics:</strong><br>`;
+                statsHtml += `📊 Total Questions: ${stats.total}<br>`;
+                
+                if (stats.total > 0) {
+                    statsHtml += `<br><strong>By Source:</strong><br>`;
+                    Object.entries(stats.bySource).forEach(([source, count]) => {
+                        const icon = source === 'openai' ? '🤖' : source === 'gemini' ? '💎' : '✏️';
+                        statsHtml += `${icon} ${source.toUpperCase()}: ${count}<br>`;
+                    });
+                    
+                    statsHtml += `<br><strong>By Topic:</strong><br>`;
+                    Object.entries(stats.byTopic).forEach(([topic, count]) => {
+                        statsHtml += `📚 ${topic}: ${count}<br>`;
+                    });
+                    
+                    statsHtml += `<br><strong>By Level:</strong><br>`;
+                    Object.entries(stats.byLevel).forEach(([level, count]) => {
+                        const icon = level === 'beginner' ? '🌱' : level === 'intermediate' ? '🌿' : '🌳';
+                        statsHtml += `${icon} ${level}: ${count}<br>`;
+                    });
+                }
+                
+                cacheStatsEl.innerHTML = statsHtml;
+            } catch (error) {
+                document.getElementById('cache-stats').innerHTML = 'Failed to load cache statistics';
+            }
+        }
+
+        // Listen for pause state changes from main process
+        ipcRenderer.on('pause-state-changed', (event, data) => {
+            updatePauseStatusUI(data.paused);
+        });
+
+        // Helper function to update pause UI without IPC call
+        function updatePauseStatusUI(isPaused) {
+            if (isPaused) {
+                elements.pauseResumeBtn.classList.add('paused');
+                elements.pauseResumeIcon.textContent = '▶️';
+                elements.pauseResumeText.textContent = 'Resume Questions';
+                elements.pauseStatusText.textContent = 'Questions are paused';
+                elements.pauseStatusText.classList.add('paused');
+            } else {
+                elements.pauseResumeBtn.classList.remove('paused');
+                elements.pauseResumeIcon.textContent = '⏸️';
+                elements.pauseResumeText.textContent = 'Pause Questions';
+                elements.pauseStatusText.textContent = 'Questions are active';
+                elements.pauseStatusText.classList.remove('paused');
+            }
+        }
+
+        // Initialize on load
+        initializeSettings();
+        updateCacheStats();
+        
+        // Update cache stats when window gains focus (in case questions were added while settings was closed)
+        window.addEventListener('focus', async () => {
+            try {
+                await ipcRenderer.invoke('reload-cache');
+                updateCacheStats();
+            } catch (error) {
+                console.error('Failed to reload cache on focus:', error);
+                updateCacheStats(); // Still try to update with current cache
+            }
+        });
+        
+        // Also update cache stats periodically
+        setInterval(updateCacheStats, 5000); // Update every 5 seconds
+    </script>
+</body>
+</html>

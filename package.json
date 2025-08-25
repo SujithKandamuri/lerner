@@ -1,0 +1,29 @@
+{
+  "name": "random-learner",
+  "version": "1.0.0",
+  "description": "A learning app that shows random popup questions to help users learn on-the-go",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron src/index.js",
+    "dev": "nodemon --exec electron src/index.js"
+  },
+  "keywords": [
+    "learning",
+    "quiz",
+    "education",
+    "random",
+    "popup"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "electron": "^26.0.0",
+    "electron-store": "^8.1.0",
+    "openai": "^4.0.0",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

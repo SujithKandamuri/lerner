@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Learning Question</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: min(800px, 90vw);
+            width: 90%;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* Responsive design for larger screens */
+        @media (min-width: 768px) {
+            .container {
+                width: 80%;
+                max-width: 900px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                width: 70%;
+                max-width: 1000px;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .question {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+        
+        /* Larger text for bigger screens */
+        @media (min-width: 768px) {
+            .question {
+                font-size: 1.2em;
+                padding: 25px;
+                line-height: 1.5;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .option {
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+            
+            .btn {
+                padding: 15px 30px;
+                font-size: 1.1em;
+            }
+        }
+        
+        .options {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+        
+        .option {
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .option-letter {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #667eea;
+        }
+        
+        .option.selected .option-letter {
+            color: white;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .feedback.correct {
+            background: #c6f6d5;
+            border-left: 4px solid #38a169;
+            color: #22543d;
+        }
+        
+        .feedback.incorrect {
+            background: #fed7d7;
+            border-left: 4px solid #e53e3e;
+            color: #742a2a;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .feedback-explanation {
+            line-height: 1.5;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+        
+        .loading::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        /* Confirmation Dialog Styles */
+        .confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .confirmation-dialog {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .confirmation-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-message {
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .confirmation-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .countdown {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .countdown #countdown-timer {
+            font-weight: bold;
+            color: #e53e3e;
+        }
+        
+        /* Extension Notification Styles */
+        #extension-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .extension-notice {
+            background: #c6f6d5;
+            border: 2px solid #38a169;
+            color: #22543d;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Learning Time!</h1>
+            <p>Test your knowledge with this random question</p>
+            <div id="question-meta" style="font-size: 0.8em; color: #666; margin-top: 10px;"></div>
+        </div>
+        
+        <div id="loading" class="loading">Loading question</div>
+        
+        <div id="quiz-content" style="display: none;">
+            <div id="question" class="question"></div>
+            
+            <ul id="options" class="options"></ul>
+            
+            <div class="buttons">
+                <button id="submit-btn" class="btn btn-primary" disabled>Submit Answer</button>
+                <button id="skip-btn" class="btn btn-secondary">Skip Question</button>
+            </div>
+            
+            <div id="feedback" class="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        let currentQuestion = null;
+        let selectedOption = null;
+        
+        // DOM elements
+        const loadingEl = document.getElementById('loading');
+        const quizContentEl = document.getElementById('quiz-content');
+        const questionEl = document.getElementById('question');
+        const questionMetaEl = document.getElementById('question-meta');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const feedbackEl = document.getElementById('feedback');
+        
+        // Load question when window opens
+        async function loadQuestion() {
+            try {
+                currentQuestion = await ipcRenderer.invoke('get-question');
+                displayQuestion();
+            } catch (error) {
+                console.error('Failed to load question:', error);
+                questionEl.textContent = 'Failed to load question. Please try again.';
+            }
+        }
+        
+        function displayQuestion() {
+            loadingEl.style.display = 'none';
+            quizContentEl.style.display = 'block';
+            
+            questionEl.textContent = currentQuestion.question;
+            
+            // Show topic and level if available
+            if (currentQuestion.topic || currentQuestion.level) {
+                let metaText = '';
+                if (currentQuestion.topic && currentQuestion.topic !== 'general') {
+                    metaText += `Topic: ${currentQuestion.topic.charAt(0).toUpperCase() + currentQuestion.topic.slice(1)}`;
+                }
+                if (currentQuestion.level && currentQuestion.level !== 'mixed') {
+                    if (metaText) metaText += ' • ';
+                    metaText += `Level: ${currentQuestion.level.charAt(0).toUpperCase() + currentQuestion.level.slice(1)}`;
+                }
+                if (currentQuestion.source === 'openai') {
+                    if (metaText) metaText += ' • ';
+                    metaText += '🤖 AI Generated';
+                }
+                questionMetaEl.textContent = metaText;
+            }
+            
+            optionsEl.innerHTML = '';
+            currentQuestion.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<span class="option-letter">${String.fromCharCode(65 + index)})</span>${option}`;
+                li.addEventListener('click', () => selectOption(index, li));
+                optionsEl.appendChild(li);
+            });
+        }
+        
+        function selectOption(index, element) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            element.classList.add('selected');
+            selectedOption = index;
+            submitBtn.disabled = false;
+        }
+        
+        async function submitAnswer() {
+            if (selectedOption === null) return;
+            
+            submitBtn.disabled = true;
+            skipBtn.disabled = true;
+            
+            try {
+                const result = await ipcRenderer.invoke('submit-answer', currentQuestion.id, selectedOption);
+                showFeedback(result);
+            } catch (error) {
+                console.error('Failed to submit answer:', error);
+            }
+        }
+        
+        function showFeedback(result) {
+            feedbackEl.style.display = 'block';
+            feedbackEl.className = `feedback ${result.correct ? 'correct' : 'incorrect'}`;
+            
+            const title = result.correct ? '🎉 Correct!' : '❌ Incorrect';
+            const answerInfo = result.correct 
+                ? `Great job! You selected: ${result.userAnswer}`
+                : `You selected: ${result.userAnswer}<br>Correct answer: ${result.correctAnswer}`;
+            
+            let enhancedIndicator = '';
+            if (result.enhanced) {
+                enhancedIndicator = '<div style="font-size: 0.8em; color: #666; margin-top: 5px;">🤖 Enhanced AI Feedback</div>';
+            }
+            
+            feedbackEl.innerHTML = `
+                <div class="feedback-title">${title}</div>
+                <div>${answerInfo}</div>
+                <div class="feedback-explanation">${result.explanation}</div>
+                ${enhancedIndicator}
+            `;
+            
+            // Auto-close with confirmation after 5 seconds
+            setTimeout(() => {
+                showCloseConfirmation();
+            }, 5000);
+            
+            // Change skip button to close
+            skipBtn.textContent = 'Close';
+            skipBtn.disabled = false;
+            skipBtn.onclick = () => ipcRenderer.invoke('close-question');
+        }
+        
+        function skipQuestion() {
+            ipcRenderer.invoke('close-question');
+        }
+        
+        let extendedTimer = null;
+        
+        function showCloseConfirmation() {
+            // Create confirmation dialog
+            const confirmDialog = document.createElement('div');
+            confirmDialog.id = 'close-confirmation';
+            confirmDialog.innerHTML = `
+                <div class="confirmation-overlay">
+                    <div class="confirmation-dialog">
+                        <div class="confirmation-title">⏰ Window Auto-Close</div>
+                        <div class="confirmation-message">
+                            This window will close automatically.<br>
+                            Would you like to keep it open for 5 more minutes?
+                        </div>
+                        <div class="confirmation-buttons">
+                            <button id="extend-btn" class="btn btn-primary">Keep Open (5 min)</button>
+                            <button id="close-now-btn" class="btn btn-secondary">Close Now</button>
+                        </div>
+                        <div id="countdown" class="countdown">Closing in <span id="countdown-timer">10</span> seconds...</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmDialog);
+            
+            // Start countdown
+            let countdown = 10;
+            const countdownEl = document.getElementById('countdown-timer');
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                countdownEl.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    closeWindow();
+                }
+            }, 1000);
+            
+            // Event listeners
+            document.getElementById('extend-btn').addEventListener('click', () => {
+                clearInterval(countdownInterval);
+                document.body.removeChild(confirmDialog);
+                extendWindow();
+            });
+            
+            document.getElementById('close-now-btn').addEventListener('click', () => {
+                clearInterval(countdownInterval);
+                closeWindow();
+            });
+        }
+        
+        function extendWindow() {
+            // Clear any existing extended timer
+            if (extendedTimer) {
+                clearTimeout(extendedTimer);
+            }
+            
+            // Show extension notification
+            const notification = document.createElement('div');
+            notification.id = 'extension-notification';
+            notification.innerHTML = `
+                <div class="extension-notice">
+                    ✅ Window extended for 5 more minutes
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                if (document.getElementById('extension-notification')) {
+                    document.body.removeChild(notification);
+                }
+            }, 3000);
+            
+            // Set new timer for 5 minutes
+            extendedTimer = setTimeout(() => {
+                showCloseConfirmation();
+            }, 300000); // 5 minutes
+        }
+        
+        function closeWindow() {
+            ipcRenderer.invoke('close-question');
+        }
+        
+        // Event listeners
+        submitBtn.addEventListener('click', submitAnswer);
+        skipBtn.addEventListener('click', skipQuestion);
+        
+        // Load question on page load
+        loadQuestion();
+        
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', (event) => {
+            if (event.key >= '1' && event.key <= '4') {
+                const index = parseInt(event.key) - 1;
+                const options = document.querySelectorAll('.option');
+                if (options[index]) {
+                    selectOption(index, options[index]);
+                }
+            } else if (event.key === 'Enter' && selectedOption !== null) {
+                submitAnswer();
+            } else if (event.key === 'Escape') {
+                skipQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
