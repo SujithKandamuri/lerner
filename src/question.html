@@ -15,10 +15,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
+            padding: 20px 0;
+            margin: 0;
+            overflow-y: auto;
         }
         
         .container {
@@ -28,7 +31,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             max-width: min(800px, 90vw);
             width: 90%;
+            min-height: fit-content;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
             animation: slideIn 0.3s ease-out;
+            position: relative; /* Enable absolute positioning for child elements */
+            margin: auto 0;
         }
         
         /* Responsive design for larger screens */
@@ -60,12 +68,25 @@
         .header {
             text-align: center;
             margin-bottom: 25px;
+            position: relative;
         }
         
         .header h1 {
             color: #667eea;
             font-size: 1.5em;
             margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header h1 img {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+            border-radius: 6px;
+            background: transparent;
+            /* Remove box-shadow to avoid background appearance */
         }
         
         .header p {
@@ -81,6 +102,178 @@
             border-radius: 8px;
             font-size: 1.1em;
             line-height: 1.4;
+            position: relative;
+        }
+        
+        .question-source-tag {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+            cursor: help;
+            transition: transform 0.2s ease;
+        }
+        
+        .question-source-tag:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .tag-ai {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .tag-gemini {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+        }
+        
+        .tag-openai {
+            background: linear-gradient(135deg, #10a37f, #1a7f64);
+            color: white;
+        }
+        
+        .tag-static {
+            background: linear-gradient(135deg, #718096, #4a5568);
+            color: white;
+        }
+        
+        .tag-static-fallback {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            color: white;
+        }
+        
+        .topic-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 9;
+            cursor: help;
+            transition: transform 0.2s ease;
+        }
+        
+        .topic-icon:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        /* Programming Language Icons */
+        .icon-python {
+            background: linear-gradient(135deg, #3776ab, #ffd43b);
+            color: white;
+        }
+        
+        .icon-java {
+            background: linear-gradient(135deg, #f89820, #ed8b00);
+            color: white;
+        }
+        
+        .icon-javascript {
+            background: linear-gradient(135deg, #f7df1e, #f0db4f);
+            color: #323330;
+        }
+        
+        .icon-cpp {
+            background: linear-gradient(135deg, #00599c, #004482);
+            color: white;
+        }
+        
+        .icon-csharp {
+            background: linear-gradient(135deg, #239120, #68217a);
+            color: white;
+        }
+        
+        .icon-php {
+            background: linear-gradient(135deg, #777bb4, #4f5b93);
+            color: white;
+        }
+        
+        .icon-ruby {
+            background: linear-gradient(135deg, #cc342d, #a91e1e);
+            color: white;
+        }
+        
+        .icon-go {
+            background: linear-gradient(135deg, #00add8, #007d9c);
+            color: white;
+        }
+        
+        .icon-rust {
+            background: linear-gradient(135deg, #ce422b, #a33319);
+            color: white;
+        }
+        
+        .icon-swift {
+            background: linear-gradient(135deg, #fa7343, #ff8c00);
+            color: white;
+        }
+        
+        .icon-kotlin {
+            background: linear-gradient(135deg, #7f52ff, #0095d5);
+            color: white;
+        }
+        
+        /* Topic Category Icons */
+        .icon-database {
+            background: linear-gradient(135deg, #336791, #2d5aa0);
+            color: white;
+        }
+        
+        .icon-web {
+            background: linear-gradient(135deg, #61dafb, #21759b);
+            color: white;
+        }
+        
+        .icon-mobile {
+            background: linear-gradient(135deg, #a4c639, #8bc34a);
+            color: white;
+        }
+        
+        .icon-algorithms {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+        
+        .icon-security {
+            background: linear-gradient(135deg, #ffa726, #ff9800);
+            color: white;
+        }
+        
+        .icon-devops {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            color: white;
+        }
+        
+        .icon-ai {
+            background: linear-gradient(135deg, #9c27b0, #673ab7);
+            color: white;
+        }
+        
+        .icon-general {
+            background: linear-gradient(135deg, #607d8b, #455a64);
+            color: white;
+        }
+        
+        /* Normal question padding - icons are now in header area */
+        .question {
+            padding: 20px; /* Normal padding since icons are in header */
         }
         
         /* Larger text for bigger screens */
@@ -91,8 +284,25 @@
                 line-height: 1.5;
             }
             
+            .topic-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                left: 20px;
+            }
+            
+            .question-source-tag {
+                right: 20px;
+            }
+            
             .header h1 {
                 font-size: 1.8em;
+            }
+            
+            .header h1 img {
+                width: 36px;
+                height: 36px;
+                background: transparent;
             }
             
             .option {
@@ -324,12 +534,41 @@
                 transform: translateX(0);
             }
         }
+        
+        /* Media queries for small screens and windows */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 5px auto;
+                max-height: calc(100vh - 10px);
+            }
+            
+            body {
+                padding: 5px 0;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .container {
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
+            }
+            
+            body {
+                align-items: flex-start;
+                padding: 10px 0;
+            }
+            
+            .header {
+                margin-bottom: 15px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧠 Learning Time!</h1>
+            <h1><img src="icons/app-icon.png" alt="Random Learner">Learning Time!</h1>
             <p>Test your knowledge with this random question</p>
             <div id="question-meta" style="font-size: 0.8em; color: #666; margin-top: 10px;"></div>
         </div>
@@ -343,6 +582,7 @@
             
             <div class="buttons">
                 <button id="submit-btn" class="btn btn-primary" disabled>Submit Answer</button>
+                <button id="next-btn" class="btn btn-primary" style="display: none;">Next Question</button>
                 <button id="skip-btn" class="btn btn-secondary">Skip Question</button>
             </div>
             
@@ -363,6 +603,7 @@
         const questionMetaEl = document.getElementById('question-meta');
         const optionsEl = document.getElementById('options');
         const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
         const skipBtn = document.getElementById('skip-btn');
         const feedbackEl = document.getElementById('feedback');
         
@@ -381,7 +622,23 @@
             loadingEl.style.display = 'none';
             quizContentEl.style.display = 'block';
             
-            questionEl.textContent = currentQuestion.question;
+            // Set question text only
+            questionEl.innerHTML = currentQuestion.question;
+            
+            // Add icons to the header area
+            const header = document.querySelector('.header');
+            
+            // Remove any existing icons
+            const existingTopicIcon = header.querySelector('.topic-icon');
+            const existingSourceTag = header.querySelector('.question-source-tag');
+            if (existingTopicIcon) existingTopicIcon.remove();
+            if (existingSourceTag) existingSourceTag.remove();
+            
+            // Add new icons to header
+            if (currentQuestion.topic) {
+                header.insertAdjacentHTML('beforeend', getTopicIcon(currentQuestion.topic));
+            }
+            header.insertAdjacentHTML('beforeend', getSourceTag(currentQuestion.source, currentQuestion.aiEnabled));
             
             // Show topic and level if available
             if (currentQuestion.topic || currentQuestion.level) {
@@ -392,10 +649,6 @@
                 if (currentQuestion.level && currentQuestion.level !== 'mixed') {
                     if (metaText) metaText += ' • ';
                     metaText += `Level: ${currentQuestion.level.charAt(0).toUpperCase() + currentQuestion.level.slice(1)}`;
-                }
-                if (currentQuestion.source === 'openai') {
-                    if (metaText) metaText += ' • ';
-                    metaText += '🤖 AI Generated';
                 }
                 questionMetaEl.textContent = metaText;
             }
@@ -408,6 +661,122 @@
                 li.addEventListener('click', () => selectOption(index, li));
                 optionsEl.appendChild(li);
             });
+        }
+        
+        function getTopicIcon(topic) {
+            if (!topic) return '';
+            
+            let iconClass = '';
+            let iconText = '';
+            
+            // Normalize topic for matching
+            const normalizedTopic = topic.toLowerCase().trim();
+            
+            // Programming Languages
+            if (normalizedTopic.includes('python')) {
+                iconClass = 'icon-python';
+                iconText = 'Py';
+            } else if (normalizedTopic.includes('java') && !normalizedTopic.includes('javascript')) {
+                iconClass = 'icon-java';
+                iconText = 'J';
+            } else if (normalizedTopic.includes('javascript') || normalizedTopic.includes('js')) {
+                iconClass = 'icon-javascript';
+                iconText = 'JS';
+            } else if (normalizedTopic.includes('c++') || normalizedTopic.includes('cpp')) {
+                iconClass = 'icon-cpp';
+                iconText = 'C++';
+            } else if (normalizedTopic.includes('c#') || normalizedTopic.includes('csharp')) {
+                iconClass = 'icon-csharp';
+                iconText = 'C#';
+            } else if (normalizedTopic.includes('php')) {
+                iconClass = 'icon-php';
+                iconText = 'PHP';
+            } else if (normalizedTopic.includes('ruby')) {
+                iconClass = 'icon-ruby';
+                iconText = 'Rb';
+            } else if (normalizedTopic.includes('go') || normalizedTopic.includes('golang')) {
+                iconClass = 'icon-go';
+                iconText = 'Go';
+            } else if (normalizedTopic.includes('rust')) {
+                iconClass = 'icon-rust';
+                iconText = 'Rs';
+            } else if (normalizedTopic.includes('swift')) {
+                iconClass = 'icon-swift';
+                iconText = 'Sw';
+            } else if (normalizedTopic.includes('kotlin')) {
+                iconClass = 'icon-kotlin';
+                iconText = 'Kt';
+            }
+            // Topic Categories
+            else if (normalizedTopic.includes('database') || normalizedTopic.includes('sql') || normalizedTopic.includes('mysql') || normalizedTopic.includes('postgresql')) {
+                iconClass = 'icon-database';
+                iconText = 'DB';
+            } else if (normalizedTopic.includes('web') || normalizedTopic.includes('html') || normalizedTopic.includes('css') || normalizedTopic.includes('react') || normalizedTopic.includes('vue') || normalizedTopic.includes('angular')) {
+                iconClass = 'icon-web';
+                iconText = 'Web';
+            } else if (normalizedTopic.includes('mobile') || normalizedTopic.includes('android') || normalizedTopic.includes('ios') || normalizedTopic.includes('flutter')) {
+                iconClass = 'icon-mobile';
+                iconText = '📱';
+            } else if (normalizedTopic.includes('algorithm') || normalizedTopic.includes('data structure') || normalizedTopic.includes('sorting') || normalizedTopic.includes('search')) {
+                iconClass = 'icon-algorithms';
+                iconText = 'Alg';
+            } else if (normalizedTopic.includes('security') || normalizedTopic.includes('encryption') || normalizedTopic.includes('auth')) {
+                iconClass = 'icon-security';
+                iconText = '🔒';
+            } else if (normalizedTopic.includes('devops') || normalizedTopic.includes('docker') || normalizedTopic.includes('kubernetes') || normalizedTopic.includes('ci/cd')) {
+                iconClass = 'icon-devops';
+                iconText = 'Ops';
+            } else if (normalizedTopic.includes('ai') || normalizedTopic.includes('machine learning') || normalizedTopic.includes('ml') || normalizedTopic.includes('neural')) {
+                iconClass = 'icon-ai';
+                iconText = 'AI';
+            } else if (normalizedTopic.includes('programming') || normalizedTopic.includes('coding') || normalizedTopic.includes('development')) {
+                iconClass = 'icon-general';
+                iconText = '💻';
+            } else {
+                // Default general programming icon
+                iconClass = 'icon-general';
+                iconText = '📝';
+            }
+            
+            const topicTooltip = `Topic: ${topic.charAt(0).toUpperCase() + topic.slice(1)} - This question focuses on ${topic} concepts`;
+            return `<div class="topic-icon ${iconClass}" title="${topicTooltip}">${iconText}</div>`;
+        }
+        
+        function getSourceTag(source, aiEnabled = false) {
+            let tagClass = '';
+            let tagText = '';
+            let icon = '';
+            let tooltip = '';
+            
+            switch (source) {
+                case 'openai':
+                    tagClass = 'tag-openai';
+                    tagText = 'OpenAI';
+                    icon = '🤖';
+                    tooltip = 'This question was generated by OpenAI GPT - AI-powered with comprehensive explanations';
+                    break;
+                case 'gemini':
+                    tagClass = 'tag-gemini';
+                    tagText = 'Gemini';
+                    icon = '✨';
+                    tooltip = 'This question was generated by Google Gemini AI - Advanced AI with detailed explanations';
+                    break;
+                case 'static-fallback':
+                    tagClass = 'tag-static-fallback';
+                    tagText = 'Static (AI Fallback)';
+                    icon = '⚠️';
+                    tooltip = 'AI was enabled but unavailable - Using static question as fallback';
+                    break;
+                case 'static':
+                default:
+                    tagClass = 'tag-static';
+                    tagText = 'Static';
+                    icon = '📚';
+                    tooltip = 'This is a pre-written static question from the built-in question bank';
+                    break;
+            }
+            
+            return `<div class="question-source-tag ${tagClass}" title="${tooltip}">${icon} ${tagText}</div>`;
         }
         
         function selectOption(index, element) {
@@ -455,19 +824,63 @@
                 ${enhancedIndicator}
             `;
             
-            // Auto-close with confirmation after 5 seconds
-            setTimeout(() => {
-                showCloseConfirmation();
-            }, 5000);
+            // Show next question button and hide submit button
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+            nextBtn.disabled = false;
             
-            // Change skip button to close
+            // Update skip button to close
             skipBtn.textContent = 'Close';
             skipBtn.disabled = false;
             skipBtn.onclick = () => ipcRenderer.invoke('close-question');
+            
+            // Auto-close with confirmation after 8 seconds (increased time for better UX)
+            setTimeout(() => {
+                showCloseConfirmation();
+            }, 8000);
         }
         
         function skipQuestion() {
             ipcRenderer.invoke('close-question');
+        }
+        
+        async function nextQuestion() {
+            // Reset UI state
+            resetQuestionUI();
+            
+            // Show loading state
+            loadingEl.style.display = 'block';
+            quizContentEl.style.display = 'none';
+            
+            try {
+                // Load next question
+                currentQuestion = await ipcRenderer.invoke('next-question');
+                displayQuestion();
+            } catch (error) {
+                console.error('Failed to load next question:', error);
+                questionEl.textContent = 'Failed to load next question. Please try again.';
+                loadingEl.style.display = 'none';
+                quizContentEl.style.display = 'block';
+            }
+        }
+        
+        function resetQuestionUI() {
+            // Reset form state
+            selectedOption = null;
+            feedbackEl.style.display = 'none';
+            feedbackEl.className = 'feedback';
+            
+            // Reset buttons
+            submitBtn.style.display = 'inline-block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            nextBtn.disabled = true;
+            skipBtn.textContent = 'Skip Question';
+            skipBtn.disabled = false;
+            skipBtn.onclick = skipQuestion;
+            
+            // Clear selections
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
         }
         
         let extendedTimer = null;
@@ -479,16 +892,17 @@
             confirmDialog.innerHTML = `
                 <div class="confirmation-overlay">
                     <div class="confirmation-dialog">
-                        <div class="confirmation-title">⏰ Window Auto-Close</div>
+                        <div class="confirmation-title">🎯 Continue Learning?</div>
                         <div class="confirmation-message">
-                            This window will close automatically.<br>
-                            Would you like to keep it open for 5 more minutes?
+                            Great job on that question!<br>
+                            What would you like to do next?
                         </div>
                         <div class="confirmation-buttons">
-                            <button id="extend-btn" class="btn btn-primary">Keep Open (5 min)</button>
+                            <button id="next-question-btn" class="btn btn-primary">Next Question</button>
+                            <button id="extend-btn" class="btn btn-secondary">Keep Open (5 min)</button>
                             <button id="close-now-btn" class="btn btn-secondary">Close Now</button>
                         </div>
-                        <div id="countdown" class="countdown">Closing in <span id="countdown-timer">10</span> seconds...</div>
+                        <div id="countdown" class="countdown">Auto-closing in <span id="countdown-timer">15</span> seconds...</div>
                     </div>
                 </div>
             `;
@@ -496,7 +910,7 @@
             document.body.appendChild(confirmDialog);
             
             // Start countdown
-            let countdown = 10;
+            let countdown = 15;
             const countdownEl = document.getElementById('countdown-timer');
             const countdownInterval = setInterval(() => {
                 countdown--;
@@ -508,6 +922,12 @@
             }, 1000);
             
             // Event listeners
+            document.getElementById('next-question-btn').addEventListener('click', () => {
+                clearInterval(countdownInterval);
+                document.body.removeChild(confirmDialog);
+                nextQuestion();
+            });
+            
             document.getElementById('extend-btn').addEventListener('click', () => {
                 clearInterval(countdownInterval);
                 document.body.removeChild(confirmDialog);
@@ -555,6 +975,7 @@
         
         // Event listeners
         submitBtn.addEventListener('click', submitAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
         skipBtn.addEventListener('click', skipQuestion);
         
         // Load question on page load
@@ -568,10 +989,21 @@
                 if (options[index]) {
                     selectOption(index, options[index]);
                 }
-            } else if (event.key === 'Enter' && selectedOption !== null) {
-                submitAnswer();
+            } else if (event.key === 'Enter') {
+                if (nextBtn.style.display !== 'none' && !nextBtn.disabled) {
+                    // If next button is visible, load next question
+                    nextQuestion();
+                } else if (selectedOption !== null && !submitBtn.disabled) {
+                    // If answer is selected and submit is enabled, submit answer
+                    submitAnswer();
+                }
             } else if (event.key === 'Escape') {
                 skipQuestion();
+            } else if (event.key === 'n' || event.key === 'N') {
+                // 'N' key for next question (when available)
+                if (nextBtn.style.display !== 'none' && !nextBtn.disabled) {
+                    nextQuestion();
+                }
             }
         });
     </script>

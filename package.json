@@ -1,7 +1,7 @@
 {
   "name": "@codejoy/random-learner",
-  "version": "1.0.2",
-  "description": "An intelligent learning companion that displays random popup quiz questions with AI-powered content generation to help users learn programming concepts on-the-go",
+  "version": "2.0.0",
+  "description": "A comprehensive interview preparation and learning companion with AI-powered questions, mock interviews, skill assessments, and company-specific question sets for technical job interviews",
   "main": "src/index.js",
   "bin": {
     "random-learner": "bin/random-learner.js"
@@ -15,11 +15,13 @@
     "postinstall": "echo \"Random Learner installed successfully! Run 'random-learner' to start.\""
   },
   "keywords": [
+    "interview-preparation",
+    "mock-interviews",
+    "skill-assessment",
+    "company-questions",
     "learning",
     "quiz",
     "education",
-    "random",
-    "popup",
     "ai",
     "programming",
     "electron",
@@ -33,7 +35,22 @@
     "python",
     "database",
     "oop",
-    "artificial-intelligence"
+    "artificial-intelligence",
+    "google",
+    "amazon",
+    "meta",
+    "microsoft",
+    "apple",
+    "netflix",
+    "uber",
+    "faang",
+    "technical-interviews",
+    "coding-interviews",
+    "system-design",
+    "behavioral-interviews",
+    "weakness-detection",
+    "analytics",
+    "progress-tracking"
   ],
   "author": "CodeJoy <support@codejoy.dev>",
   "license": "MIT",

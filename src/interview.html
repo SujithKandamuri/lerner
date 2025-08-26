@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Interview - Random Learner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .interview-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header with timer and progress */
+        .interview-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .interview-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .interview-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .timer-section {
+            text-align: right;
+        }
+
+        .timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Interview phases indicator */
+        .phase-indicator {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .phase-item {
+            display: flex;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .phase-item.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+
+        .phase-item.completed {
+            opacity: 0.8;
+            color: #4CAF50;
+        }
+
+        .phase-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            margin-right: 8px;
+        }
+
+        /* Main content area */
+        .interview-content {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        /* Setup screen */
+        .setup-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .setup-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .setup-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .interview-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .interview-type-card {
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .interview-type-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .interview-type-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-duration {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            font-size: 0.9em;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        .company-selector {
+            margin: 30px 0;
+        }
+
+        .company-selector h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .company-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .company-option {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .company-option:hover {
+            border-color: #667eea;
+        }
+
+        .company-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .start-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Question screen */
+        .question-screen {
+            display: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .question-number {
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .question-timer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e74c3c;
+            font-family: 'Courier New', monospace;
+        }
+
+        .question-content {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .difficulty-easy {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .difficulty-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .difficulty-hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .options-container {
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            margin-right: 15px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+        }
+
+        .option.selected .option-letter {
+            background: white;
+            color: #667eea;
+        }
+
+        .question-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .action-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .action-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 4em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .score-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .score-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .performance-insights {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .insights-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .insights-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .insights-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .insights-list li:last-child {
+            border-bottom: none;
+        }
+
+        .insight-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .results-actions {
+            margin-top: 40px;
+        }
+
+        .results-actions .action-button {
+            margin: 0 10px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .interview-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .timer-section {
+                text-align: center;
+            }
+
+            .interview-types {
+                grid-template-columns: 1fr;
+            }
+
+            .company-options {
+                justify-content: flex-start;
+            }
+
+            .question-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .question-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .score-breakdown {
+                grid-template-columns: 1fr;
+            }
+
+            .results-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Loading and transition states */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pause overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .pause-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .pause-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .pause-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="interview-container">
+        <!-- Header -->
+        <div class="interview-header">
+            <div>
+                <div class="interview-title" id="interview-title">Mock Interview</div>
+                <div class="interview-subtitle" id="interview-subtitle">Select your interview type to begin</div>
+            </div>
+            <div class="timer-section">
+                <div class="timer-display" id="timer-display">--:--</div>
+                <div class="timer-label">Time Remaining</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Phase Indicator -->
+        <div class="phase-indicator" id="phase-indicator" style="display: none;">
+            <div class="phase-item" id="phase-warmup">
+                <div class="phase-dot"></div>
+                <span>Warm-up</span>
+            </div>
+            <div class="phase-item" id="phase-technical">
+                <div class="phase-dot"></div>
+                <span>Technical</span>
+            </div>
+            <div class="phase-item" id="phase-advanced">
+                <div class="phase-dot"></div>
+                <span>Advanced</span>
+            </div>
+            <div class="phase-item" id="phase-behavioral">
+                <div class="phase-dot"></div>
+                <span>Behavioral</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="interview-content">
+            <!-- Setup Screen -->
+            <div class="setup-screen" id="setup-screen">
+                <h2 class="setup-title">🎯 Mock Interview</h2>
+                <p class="setup-subtitle">Choose your interview type and get ready to showcase your skills!</p>
+                
+                <div class="interview-types" id="interview-types">
+                    <!-- Interview type cards will be populated by JavaScript -->
+                </div>
+
+                <div class="company-selector">
+                    <h3>🏢 Target Company (Optional)</h3>
+                    <div class="company-options" id="company-options">
+                        <!-- Company options will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <button class="start-button" id="start-interview-btn" disabled>
+                    🚀 Start Interview
+                </button>
+            </div>
+
+            <!-- Question Screen -->
+            <div class="question-screen" id="question-screen">
+                <div class="question-header">
+                    <div class="question-number" id="question-number">Question 1 of 10</div>
+                    <div class="question-timer" id="question-timer">05:00</div>
+                </div>
+
+                <div class="question-content">
+                    <div class="question-difficulty" id="question-difficulty">Medium</div>
+                    <div class="question-text" id="question-text">
+                        Loading question...
+                    </div>
+                </div>
+
+                <div class="options-container" id="options-container">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+
+                <div class="question-actions">
+                    <button class="action-button btn-secondary" id="pause-btn">⏸️ Pause</button>
+                    <div>
+                        <button class="action-button btn-danger" id="skip-btn">Skip Question</button>
+                        <button class="action-button btn-primary" id="submit-answer-btn" disabled>Submit Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen" id="results-screen">
+                <h2 class="results-title">🎉 Interview Complete!</h2>
+                <div class="final-score" id="final-score">85</div>
+
+                <div class="score-breakdown" id="score-breakdown">
+                    <!-- Score breakdown will be populated by JavaScript -->
+                </div>
+
+                <div class="performance-insights">
+                    <h3 class="insights-title">🧠 Performance Insights</h3>
+                    <ul class="insights-list" id="insights-list">
+                        <!-- Insights will be populated by JavaScript -->
+                    </ul>
+                </div>
+
+                <div class="results-actions">
+                    <button class="action-button btn-primary" id="new-interview-btn">🔄 New Interview</button>
+                    <button class="action-button btn-secondary" id="view-analytics-btn">📊 View Analytics</button>
+                    <button class="action-button btn-secondary" id="close-interview-btn">✖️ Close</button>
+                </div>
+            </div>
+
+            <!-- Loading Screen -->
+            <div class="loading" id="loading-screen" style="display: none;">
+                Preparing your interview...
+            </div>
+        </div>
+
+        <!-- Pause Overlay -->
+        <div class="pause-overlay" id="pause-overlay">
+            <div class="pause-content">
+                <h3 class="pause-title">⏸️ Interview Paused</h3>
+                <p>Take your time. The timer is stopped.</p>
+                <div class="pause-actions">
+                    <button class="action-button btn-primary" id="resume-btn">▶️ Resume</button>
+                    <button class="action-button btn-danger" id="end-interview-btn">🛑 End Interview</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        // Global state
+        let currentSession = null;
+        let currentQuestion = null;
+        let selectedAnswer = null;
+        let questionStartTime = null;
+        let sessionTimer = null;
+        let questionTimer = null;
+        let selectedInterviewType = null;
+        let selectedCompany = null;
+
+        // Initialize the interview interface
+        async function initializeInterview() {
+            try {
+                // Load interview types and company profiles
+                await loadInterviewTypes();
+                await loadCompanyOptions();
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                console.log('Interview interface initialized');
+            } catch (error) {
+                console.error('Failed to initialize interview:', error);
+                showError('Failed to initialize interview interface');
+            }
+        }
+
+        // Load interview types from the backend
+        async function loadInterviewTypes() {
+            try {
+                const interviewTypes = await ipcRenderer.invoke('get-interview-types');
+                const container = document.getElementById('interview-types');
+                
+                container.innerHTML = '';
+                
+                Object.entries(interviewTypes).forEach(([key, type]) => {
+                    const card = document.createElement('div');
+                    card.className = 'interview-type-card';
+                    card.dataset.type = key;
+                    
+                    card.innerHTML = `
+                        <div class="card-title">${type.name}</div>
+                        <div class="card-duration">⏱️ ${type.duration} minutes</div>
+                        <div class="card-description">${type.description}</div>
+                    `;
+                    
+                    card.addEventListener('click', () => selectInterviewType(key, card));
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Failed to load interview types:', error);
+            }
+        }
+
+        // Load company options
+        async function loadCompanyOptions() {
+            try {
+                const companies = await ipcRenderer.invoke('get-company-profiles');
+                const container = document.getElementById('company-options');
+                
+                container.innerHTML = '<div class="company-option" data-company="">General</div>';
+                
+                Object.entries(companies).forEach(([key, company]) => {
+                    const option = document.createElement('div');
+                    option.className = 'company-option';
+                    option.dataset.company = key;
+                    option.textContent = company.name;
+                    
+                    option.addEventListener('click', () => selectCompany(key, option));
+                    container.appendChild(option);
+                });
+
+                // Select "General" by default
+                selectCompany('', container.firstElementChild);
+            } catch (error) {
+                console.error('Failed to load company options:', error);
+            }
+        }
+
+        // Select interview type
+        function selectInterviewType(type, element) {
+            // Remove previous selection
+            document.querySelectorAll('.interview-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select new type
+            element.classList.add('selected');
+            selectedInterviewType = type;
+            
+            // Enable start button if type is selected
+            updateStartButton();
+        }
+
+        // Select company
+        function selectCompany(company, element) {
+            // Remove previous selection
+            document.querySelectorAll('.company-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select new company
+            element.classList.add('selected');
+            selectedCompany = company || null;
+        }
+
+        // Update start button state
+        function updateStartButton() {
+            const startBtn = document.getElementById('start-interview-btn');
+            startBtn.disabled = !selectedInterviewType;
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Start interview button
+            document.getElementById('start-interview-btn').addEventListener('click', startInterview);
+            
+            // Pause/Resume buttons
+            document.getElementById('pause-btn').addEventListener('click', pauseInterview);
+            document.getElementById('resume-btn').addEventListener('click', resumeInterview);
+            document.getElementById('end-interview-btn').addEventListener('click', endInterview);
+            
+            // Question actions
+            document.getElementById('submit-answer-btn').addEventListener('click', submitAnswer);
+            document.getElementById('skip-btn').addEventListener('click', skipQuestion);
+            
+            // Results actions
+            document.getElementById('new-interview-btn').addEventListener('click', resetToSetup);
+            document.getElementById('view-analytics-btn').addEventListener('click', viewAnalytics);
+            document.getElementById('close-interview-btn').addEventListener('click', closeInterview);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboard);
+        }
+
+        // Handle keyboard shortcuts
+        function handleKeyboard(event) {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+            
+            switch (event.key) {
+                case ' ':
+                    event.preventDefault();
+                    if (currentSession && currentSession.status === 'active') {
+                        pauseInterview();
+                    }
+                    break;
+                case 'Enter':
+                    if (selectedAnswer !== null) {
+                        submitAnswer();
+                    }
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                    const optionIndex = parseInt(event.key) - 1;
+                    selectOption(optionIndex);
+                    break;
+            }
+        }
+
+        // Start the interview
+        async function startInterview() {
+            if (!selectedInterviewType) return;
+            
+            try {
+                showLoading();
+                
+                // Start interview session
+                currentSession = await ipcRenderer.invoke('start-interview', {
+                    type: selectedInterviewType,
+                    company: selectedCompany
+                });
+                
+                // Update UI
+                document.getElementById('interview-title').textContent = currentSession.config.name;
+                document.getElementById('interview-subtitle').textContent = 
+                    selectedCompany ? `${currentSession.config.company.name} Style Interview` : 'Technical Interview';
+                
+                // Show question screen
+                showScreen('question-screen');
+                document.getElementById('phase-indicator').style.display = 'flex';
+                
+                // Load first question
+                await loadNextQuestion();
+                
+                // Start session timer
+                startSessionTimer();
+                
+            } catch (error) {
+                console.error('Failed to start interview:', error);
+                showError('Failed to start interview');
+            }
+        }
+
+        // Load next question
+        async function loadNextQuestion() {
+            try {
+                currentQuestion = await ipcRenderer.invoke('get-current-interview-question');
+                
+                if (!currentQuestion) {
+                    // Interview complete
+                    await completeInterview();
+                    return;
+                }
+                
+                displayQuestion(currentQuestion);
+                startQuestionTimer();
+                
+            } catch (error) {
+                console.error('Failed to load question:', error);
+                showError('Failed to load question');
+            }
+        }
+
+        // Display current question
+        function displayQuestion(question) {
+            const progress = currentSession ? 
+                `Question ${currentSession.questionsAnswered + 1} of ${currentSession.config.totalQuestions || 10}` :
+                'Question 1 of 10';
+            
+            document.getElementById('question-number').textContent = progress;
+            document.getElementById('question-difficulty').textContent = question.difficulty || 'Medium';
+            document.getElementById('question-difficulty').className = 
+                `question-difficulty difficulty-${question.difficulty || 'medium'}`;
+            
+            // For demo purposes, show placeholder question
+            document.getElementById('question-text').textContent = 
+                question.question || 'What is the time complexity of searching in a balanced binary search tree?';
+            
+            // Create options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const options = question.options || [
+                'O(1) - Constant time',
+                'O(log n) - Logarithmic time', 
+                'O(n) - Linear time',
+                'O(n²) - Quadratic time'
+            ];
+            
+            options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.dataset.index = index;
+                
+                optionElement.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                `;
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Reset selection
+            selectedAnswer = null;
+            document.getElementById('submit-answer-btn').disabled = true;
+            
+            // Update phase indicator
+            updatePhaseIndicator();
+            
+            questionStartTime = Date.now();
+        }
+
+        // Select an option
+        function selectOption(index) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select new option
+            const options = document.querySelectorAll('.option');
+            if (options[index]) {
+                options[index].classList.add('selected');
+                selectedAnswer = index;
+                document.getElementById('submit-answer-btn').disabled = false;
+            }
+        }
+
+        // Submit answer
+        async function submitAnswer() {
+            if (selectedAnswer === null) return;
+            
+            try {
+                const responseTime = Date.now() - questionStartTime;
+                
+                await ipcRenderer.invoke('submit-interview-answer', {
+                    answer: selectedAnswer,
+                    responseTime: responseTime
+                });
+                
+                // Load next question
+                await loadNextQuestion();
+                
+            } catch (error) {
+                console.error('Failed to submit answer:', error);
+                showError('Failed to submit answer');
+            }
+        }
+
+        // Skip question
+        async function skipQuestion() {
+            try {
+                const responseTime = Date.now() - questionStartTime;
+                
+                await ipcRenderer.invoke('submit-interview-answer', {
+                    answer: null,
+                    responseTime: responseTime,
+                    skipped: true
+                });
+                
+                // Load next question
+                await loadNextQuestion();
+                
+            } catch (error) {
+                console.error('Failed to skip question:', error);
+                showError('Failed to skip question');
+            }
+        }
+
+        // Complete interview
+        async function completeInterview() {
+            try {
+                const results = await ipcRenderer.invoke('complete-interview');
+                displayResults(results);
+                showScreen('results-screen');
+                
+                // Stop timers
+                if (sessionTimer) clearInterval(sessionTimer);
+                if (questionTimer) clearInterval(questionTimer);
+                
+            } catch (error) {
+                console.error('Failed to complete interview:', error);
+                showError('Failed to complete interview');
+            }
+        }
+
+        // Display results
+        function displayResults(results) {
+            document.getElementById('final-score').textContent = results.score || 0;
+            
+            // Score breakdown
+            const breakdown = document.getElementById('score-breakdown');
+            breakdown.innerHTML = `
+                <div class="score-item">
+                    <div class="score-value">${results.accuracyScore || 0}%</div>
+                    <div class="score-label">Accuracy</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">${results.questionsAnswered || 0}</div>
+                    <div class="score-label">Questions Answered</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">${Math.round((results.totalTime || 0) / 60000)}m</div>
+                    <div class="score-label">Time Taken</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">${results.completionScore || 0}%</div>
+                    <div class="score-label">Completion</div>
+                </div>
+            `;
+            
+            // Performance insights
+            const insights = document.getElementById('insights-list');
+            const insightsList = generateInsights(results);
+            
+            insights.innerHTML = insightsList.map(insight => 
+                `<li><span class="insight-icon">${insight.icon}</span>${insight.text}</li>`
+            ).join('');
+        }
+
+        // Generate performance insights
+        function generateInsights(results) {
+            const insights = [];
+            
+            if (results.accuracyScore >= 80) {
+                insights.push({ icon: '🎯', text: 'Excellent accuracy! You have strong technical knowledge.' });
+            } else if (results.accuracyScore >= 60) {
+                insights.push({ icon: '📈', text: 'Good accuracy. Focus on reviewing incorrect answers.' });
+            } else {
+                insights.push({ icon: '📚', text: 'Consider more practice on fundamental concepts.' });
+            }
+            
+            if (results.timeScore >= 90) {
+                insights.push({ icon: '⚡', text: 'Great time management! You work efficiently under pressure.' });
+            } else if (results.timeScore >= 70) {
+                insights.push({ icon: '⏱️', text: 'Good timing. Try to optimize your problem-solving approach.' });
+            } else {
+                insights.push({ icon: '🐌', text: 'Focus on improving your problem-solving speed.' });
+            }
+            
+            if (results.completionScore === 100) {
+                insights.push({ icon: '🏆', text: 'Perfect completion! You answered all questions.' });
+            } else if (results.completionScore >= 80) {
+                insights.push({ icon: '✅', text: 'Good completion rate. Try to finish all questions next time.' });
+            }
+            
+            return insights;
+        }
+
+        // Timer functions
+        function startSessionTimer() {
+            if (!currentSession) return;
+            
+            sessionTimer = setInterval(() => {
+                updateSessionTimer();
+            }, 1000);
+        }
+
+        function updateSessionTimer() {
+            if (!currentSession) return;
+            
+            const elapsed = Date.now() - currentSession.startTime;
+            const remaining = Math.max(0, currentSession.duration - elapsed);
+            
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update progress bar
+            const progress = ((currentSession.duration - remaining) / currentSession.duration) * 100;
+            document.getElementById('progress-fill').style.width = `${Math.min(progress, 100)}%`;
+            
+            // Auto-complete if time runs out
+            if (remaining === 0) {
+                completeInterview();
+            }
+        }
+
+        function startQuestionTimer() {
+            if (!currentQuestion) return;
+            
+            let timeLeft = currentQuestion.timeAllotted || 300000; // 5 minutes default
+            
+            questionTimer = setInterval(() => {
+                timeLeft -= 1000;
+                
+                const minutes = Math.floor(timeLeft / 60000);
+                const seconds = Math.floor((timeLeft % 60000) / 1000);
+                
+                document.getElementById('question-timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    // Auto-submit or skip question
+                    if (selectedAnswer !== null) {
+                        submitAnswer();
+                    } else {
+                        skipQuestion();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update phase indicator
+        function updatePhaseIndicator() {
+            if (!currentSession) return;
+            
+            const phases = ['warmup', 'technical', 'advanced', 'behavioral'];
+            const currentPhase = currentSession.phase || 'warmup';
+            
+            phases.forEach(phase => {
+                const element = document.getElementById(`phase-${phase}`);
+                element.classList.remove('active', 'completed');
+                
+                if (phase === currentPhase) {
+                    element.classList.add('active');
+                } else if (phases.indexOf(phase) < phases.indexOf(currentPhase)) {
+                    element.classList.add('completed');
+                }
+            });
+        }
+
+        // Pause/Resume functions
+        function pauseInterview() {
+            if (currentSession && currentSession.status === 'active') {
+                ipcRenderer.invoke('pause-interview');
+                document.getElementById('pause-overlay').style.display = 'flex';
+                
+                if (sessionTimer) clearInterval(sessionTimer);
+                if (questionTimer) clearInterval(questionTimer);
+            }
+        }
+
+        function resumeInterview() {
+            if (currentSession) {
+                ipcRenderer.invoke('resume-interview');
+                document.getElementById('pause-overlay').style.display = 'none';
+                
+                startSessionTimer();
+                if (currentQuestion) startQuestionTimer();
+            }
+        }
+
+        function endInterview() {
+            completeInterview();
+            document.getElementById('pause-overlay').style.display = 'none';
+        }
+
+        // Navigation functions
+        function showScreen(screenId) {
+            const screens = ['setup-screen', 'question-screen', 'results-screen', 'loading-screen'];
+            
+            screens.forEach(screen => {
+                const element = document.getElementById(screen);
+                if (element) {
+                    element.style.display = screen === screenId ? 'block' : 'none';
+                }
+            });
+        }
+
+        function showLoading() {
+            showScreen('loading-screen');
+        }
+
+        function resetToSetup() {
+            currentSession = null;
+            currentQuestion = null;
+            selectedAnswer = null;
+            selectedInterviewType = null;
+            
+            if (sessionTimer) clearInterval(sessionTimer);
+            if (questionTimer) clearInterval(questionTimer);
+            
+            document.getElementById('phase-indicator').style.display = 'none';
+            document.getElementById('timer-display').textContent = '--:--';
+            document.getElementById('progress-fill').style.width = '0%';
+            
+            // Reset selections
+            document.querySelectorAll('.interview-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            updateStartButton();
+            showScreen('setup-screen');
+        }
+
+        // Utility functions
+        function showError(message) {
+            console.error(message);
+            // In a real implementation, show a proper error dialog
+            alert(message);
+        }
+
+        async function viewAnalytics() {
+            try {
+                await ipcRenderer.invoke('show-analytics');
+            } catch (error) {
+                console.error('Failed to open analytics:', error);
+            }
+        }
+
+        async function closeInterview() {
+            try {
+                await ipcRenderer.invoke('close-interview-window');
+            } catch (error) {
+                console.error('Failed to close interview:', error);
+                window.close();
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeInterview);
+    </script>
+</body>
+</html>

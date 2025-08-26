@@ -9,13 +9,13 @@ class GeminiManager {
     this.isConfigured = false;
     
     // Default prompt for generating questions (same structure as OpenAI)
-    this.defaultPrompt = `Generate a multiple-choice question about the given topic and difficulty level. 
+    this.defaultPrompt = `Generate a comprehensive multiple-choice question about the given topic and difficulty level. 
 
 Requirements:
 - Create 1 question with exactly 4 options (A, B, C, D)
 - Make the question appropriate for the specified difficulty level
 - Ensure only one correct answer
-- Provide a clear, concise explanation (exactly 2 lines) for the correct answer
+- Provide detailed explanations for ALL options (correct and incorrect)
 - Focus on practical, applicable knowledge
 - Make explanations educational and helpful for learning
 
@@ -27,10 +27,21 @@ Response format (JSON):
   "question": "Your question here?",
   "options": ["Option A", "Option B", "Option C", "Option D"],
   "correct": 0,
-  "explanation": "First line: Why the correct answer is right. Second line: Additional context or why other options are wrong."
+  "explanation": "Clear explanation of why the correct answer is right and its practical applications.",
+  "explanations": {
+    "0": "Detailed explanation for option A - why it's correct/incorrect and where it's used",
+    "1": "Detailed explanation for option B - why it's correct/incorrect and where it's used", 
+    "2": "Detailed explanation for option C - why it's correct/incorrect and where it's used",
+    "3": "Detailed explanation for option D - why it's correct/incorrect and where it's used"
+  }
 }
 
-IMPORTANT: The explanation must be exactly 2 lines - first line explains why the correct answer is right, second line provides additional learning context or explains why other options are incorrect. Make sure the question tests understanding, not just memorization.`;
+IMPORTANT: 
+- The "explanation" field should explain the correct answer and its practical applications
+- The "explanations" object must contain detailed explanations for ALL 4 options
+- For incorrect options, explain WHY they are wrong and where they might be confused with the correct answer
+- For the correct option, explain WHY it's right and provide real-world usage examples
+- Make sure the question tests understanding, not just memorization.`;
 
     this.customPrompt = null;
   }
@@ -91,19 +102,65 @@ ${prompt}`;
       // Try to parse JSON from the response
       let questionData;
       try {
-        // Remove any markdown code blocks
-        const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
+        // Remove any markdown code blocks and extra text
+        let cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
+        
+        // Try to extract JSON if there's extra text
+        const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          cleanContent = jsonMatch[0];
+        }
+        
+        console.log('Attempting to parse Gemini response:', cleanContent.substring(0, 200) + '...');
         questionData = JSON.parse(cleanContent);
       } catch (parseError) {
-        console.warn('Failed to parse JSON, attempting manual extraction:', parseError);
+        console.warn('Failed to parse JSON from Gemini response:', parseError);
+        console.warn('Raw response content:', content.substring(0, 500) + '...');
         throw new Error('Failed to parse Gemini response. Please try again.');
       }
 
-      // Validate the response structure
+      // Validate the basic response structure
+      console.log('Validating Gemini response structure:', {
+        hasQuestion: !!questionData.question,
+        hasOptions: Array.isArray(questionData.options),
+        optionsLength: questionData.options?.length,
+        hasCorrect: typeof questionData.correct === 'number',
+        correctValue: questionData.correct,
+        hasExplanation: !!questionData.explanation
+      });
+      
       if (!questionData.question || !Array.isArray(questionData.options) || 
           questionData.options.length !== 4 || typeof questionData.correct !== 'number' ||
           !questionData.explanation) {
+        console.error('Invalid Gemini response structure:', questionData);
         throw new Error('Invalid question format received from Gemini');
+      }
+
+      // Handle missing explanations object (backward compatibility)
+      if (!questionData.explanations) {
+        console.warn('Gemini response missing detailed explanations, creating fallback explanations');
+        questionData.explanations = {};
+        
+        // Create basic explanations based on the main explanation
+        for (let i = 0; i < 4; i++) {
+          if (i === questionData.correct) {
+            questionData.explanations[i.toString()] = questionData.explanation;
+          } else {
+            questionData.explanations[i.toString()] = `This option is incorrect. ${questionData.explanation}`;
+          }
+        }
+      } else {
+        // Validate that explanations exist for all options
+        for (let i = 0; i < 4; i++) {
+          if (!questionData.explanations[i.toString()]) {
+            console.warn(`Missing explanation for option ${i}, using fallback`);
+            if (i === questionData.correct) {
+              questionData.explanations[i.toString()] = questionData.explanation;
+            } else {
+              questionData.explanations[i.toString()] = `This option is incorrect. The correct answer is option ${String.fromCharCode(65 + questionData.correct)}.`;
+            }
+          }
+        }
       }
 
       // Generate a unique ID
@@ -115,6 +172,7 @@ ${prompt}`;
         options: questionData.options,
         correct: questionData.correct,
         explanation: questionData.explanation,
+        explanations: questionData.explanations, // Detailed explanations for all options
         topic: topic,
         level: level,
         source: 'gemini',
@@ -146,53 +204,35 @@ ${prompt}`;
   }
 
   async validateAnswer(question, userAnswer, correctAnswer) {
-    if (!this.isReady()) {
-      // Return basic validation if Gemini is not configured
+    const isCorrect = userAnswer === correctAnswer;
+    
+    // Use pre-generated explanations if available (no additional API call needed)
+    if (question.explanations && question.explanations[userAnswer.toString()]) {
+      let explanation = '';
+      
+      if (isCorrect) {
+        explanation = `🎉 Correct! ${question.explanations[userAnswer.toString()]}`;
+      } else {
+        const userExplanation = question.explanations[userAnswer.toString()];
+        const correctExplanation = question.explanations[correctAnswer.toString()];
+        explanation = `❌ Incorrect. Your choice: ${userExplanation}\n\n✅ Correct answer: ${correctExplanation}`;
+      }
+      
       return {
-        correct: userAnswer === correctAnswer,
-        explanation: question.explanation || "Answer explanation not available."
+        correct: isCorrect,
+        explanation: explanation,
+        enhanced: true,
+        userChoiceExplanation: question.explanations[userAnswer.toString()],
+        correctChoiceExplanation: question.explanations[correctAnswer.toString()]
       };
     }
-
-    try {
-      const prompt = `Analyze this quiz question and provide feedback:
-
-Question: ${question.question}
-Options: ${question.options.map((opt, idx) => `${String.fromCharCode(65 + idx)}) ${opt}`).join('\n')}
-User's Answer: ${question.options[userAnswer]}
-Correct Answer: ${question.options[correctAnswer]}
-
-Provide a brief, encouraging explanation (2-3 sentences) that:
-1. Confirms if the answer is correct or incorrect
-2. Explains why the correct answer is right
-3. If incorrect, briefly mentions why the user's choice was wrong
-4. Provides additional learning context
-
-Keep it concise and educational.`;
-
-      const fullPrompt = `You are a helpful tutor providing feedback on quiz answers. Be encouraging and educational.
-
-${prompt}`;
-
-      const result = await this.model.generateContent(fullPrompt);
-
-      const response = await result.response;
-
-      return {
-        correct: userAnswer === correctAnswer,
-        explanation: response.text().trim(),
-        enhanced: true
-      };
-
-    } catch (error) {
-      console.error('Error validating answer with Gemini:', error);
-      // Fallback to basic validation
-      return {
-        correct: userAnswer === correctAnswer,
-        explanation: question.explanation || "Answer explanation not available.",
-        enhanced: false
-      };
-    }
+    
+    // Fallback to basic explanation if detailed explanations not available
+    return {
+      correct: isCorrect,
+      explanation: question.explanation || "Answer explanation not available.",
+      enhanced: false
+    };
   }
 
   async getTopicSuggestions(subject) {

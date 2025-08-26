@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Assessment - Random Learner</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            border: 3px solid #667eea;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Assessment Overview */
+        .assessment-overview {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .overall-score {
+            text-align: center;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#667eea 0deg, #667eea var(--score-angle), #e9ecef var(--score-angle), #e9ecef 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            width: 160px;
+            height: 160px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .score-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            z-index: 1;
+        }
+
+        .score-label {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .experience-level {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .assessment-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Category Scores */
+        .category-scores {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin-right: 15px;
+            border-radius: 2px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .category-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .category-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .category-score {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .score-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .confidence-high { background: #d4edda; color: #155724; }
+        .confidence-medium { background: #fff3cd; color: #856404; }
+        .confidence-low { background: #f8d7da; color: #721c24; }
+
+        /* Interview Readiness */
+        .interview-readiness {
+            margin-bottom: 40px;
+        }
+
+        .readiness-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .readiness-chart {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .readiness-details {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .readiness-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .readiness-item:last-child {
+            border-bottom: none;
+        }
+
+        .readiness-score {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Strengths and Weaknesses */
+        .strengths-weaknesses {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .strengths, .weaknesses {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .strengths {
+            border-left: 5px solid #28a745;
+        }
+
+        .weaknesses {
+            border-left: 5px solid #dc3545;
+        }
+
+        .strength-item, .weakness-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .strength-item:last-child, .weakness-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+
+        .item-score {
+            font-weight: bold;
+        }
+
+        .strength-score { color: #28a745; }
+        .weakness-score { color: #dc3545; }
+
+        .severity-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .severity-critical { background: #f8d7da; color: #721c24; }
+        .severity-high { background: #fff3cd; color: #856404; }
+        .severity-medium { background: #cce5ff; color: #004085; }
+        .severity-low { background: #d4edda; color: #155724; }
+
+        /* Recommendations */
+        .recommendations {
+            margin-bottom: 40px;
+        }
+
+        .recommendation-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .recommendation-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .recommendation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high { background: #f8d7da; color: #721c24; }
+        .priority-medium { background: #fff3cd; color: #856404; }
+        .priority-low { background: #d4edda; color: #155724; }
+
+        .estimated-time {
+            color: #666;
+        }
+
+        /* Certifications */
+        .certifications {
+            margin-bottom: 40px;
+        }
+
+        .certifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .certification-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .certification-card.earned {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #28a745;
+        }
+
+        .certification-badge {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .certification-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .certification-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Benchmark Comparison */
+        .benchmark-comparison {
+            margin-bottom: 40px;
+        }
+
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .benchmark-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .benchmark-level {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .salary-range {
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .readiness-percentage {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .gap-info {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Actions */
+        .actions {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-button.secondary {
+            background: #6c757d;
+        }
+
+        .action-button.danger {
+            background: #dc3545;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .assessment-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .readiness-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .strengths-weaknesses {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-circle::before {
+                width: 120px;
+                height: 120px;
+            }
+
+            .score-value {
+                font-size: 2.5em;
+            }
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        /* No data state */
+        .no-data {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .no-data h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .no-data p {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Skill Assessment Report</h1>
+            <p>Comprehensive analysis of your programming skills and interview readiness</p>
+        </div>
+
+        <div class="content">
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                Analyzing your skills and generating comprehensive report...
+            </div>
+
+            <!-- No Data State -->
+            <div class="no-data" id="no-data" style="display: none;">
+                <h3>📊 Not Enough Data</h3>
+                <p>We need more learning data to provide a comprehensive skill assessment.</p>
+                <p>Please answer at least 20 questions across different topics to get your first assessment.</p>
+                <button class="action-button" onclick="closeWindow()">Continue Learning</button>
+            </div>
+
+            <!-- Assessment Content -->
+            <div id="assessment-content" style="display: none;">
+                <!-- Assessment Overview -->
+                <div class="assessment-overview">
+                    <div class="overall-score">
+                        <div class="score-circle" id="score-circle">
+                            <div class="score-value" id="overall-score">0</div>
+                        </div>
+                        <div class="score-label">Overall Skill Score</div>
+                        <div class="experience-level" id="experience-level">Analyzing...</div>
+                    </div>
+
+                    <div class="assessment-info">
+                        <h3 style="margin-bottom: 20px;">Assessment Summary</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-value" id="interview-readiness">0%</div>
+                                <div class="info-label">Interview Readiness</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-value" id="certifications-earned">0</div>
+                                <div class="info-label">Certifications Earned</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-value" id="strengths-count">0</div>
+                                <div class="info-label">Key Strengths</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-value" id="improvement-areas">0</div>
+                                <div class="info-label">Improvement Areas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Scores -->
+                <div class="category-scores">
+                    <h2 class="section-title">📈 Skill Categories</h2>
+                    <div class="categories-grid" id="categories-grid">
+                        <!-- Categories will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Interview Readiness -->
+                <div class="interview-readiness">
+                    <h2 class="section-title">🎯 Interview Readiness</h2>
+                    <div class="readiness-grid">
+                        <div class="readiness-chart">
+                            <h3 style="margin-bottom: 20px;">Company Type Readiness</h3>
+                            <div class="chart-container">
+                                <canvas id="readiness-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="readiness-details">
+                            <h3 style="margin-bottom: 20px;">Role Readiness</h3>
+                            <div id="role-readiness">
+                                <!-- Role readiness will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strengths and Weaknesses -->
+                <div class="strengths-weaknesses">
+                    <div class="strengths">
+                        <h3 style="margin-bottom: 20px; color: #28a745;">💪 Key Strengths</h3>
+                        <div id="strengths-list">
+                            <!-- Strengths will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="weaknesses">
+                        <h3 style="margin-bottom: 20px; color: #dc3545;">🎯 Areas for Improvement</h3>
+                        <div id="weaknesses-list">
+                            <!-- Weaknesses will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="recommendations">
+                    <h2 class="section-title">💡 Personalized Recommendations</h2>
+                    <div id="recommendations-list">
+                        <!-- Recommendations will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="certifications">
+                    <h2 class="section-title">🏆 Skill Certifications</h2>
+                    <div class="certifications-grid" id="certifications-grid">
+                        <!-- Certifications will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Benchmark Comparison -->
+                <div class="benchmark-comparison">
+                    <h2 class="section-title">📊 Industry Benchmark Comparison</h2>
+                    <div class="benchmark-grid" id="benchmark-grid">
+                        <!-- Benchmarks will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="action-button" id="new-assessment-btn">🔄 New Assessment</button>
+                    <button class="action-button secondary" id="view-history-btn">📈 View History</button>
+                    <button class="action-button secondary" id="export-report-btn">📤 Export Report</button>
+                    <button class="action-button secondary" onclick="closeWindow()">✖️ Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        let assessmentData = null;
+        let readinessChart = null;
+
+        // Initialize the skill assessment interface
+        async function initializeAssessment() {
+            try {
+                console.log('Initializing skill assessment...');
+                
+                // Conduct new assessment
+                assessmentData = await ipcRenderer.invoke('conduct-skill-assessment');
+                console.log('Assessment data received:', assessmentData);
+                
+                if (assessmentData.dataQuality === 'low' && assessmentData.overallScore === 0) {
+                    showNoDataState();
+                } else {
+                    displayAssessment(assessmentData);
+                    showAssessmentContent();
+                }
+                
+                setupEventListeners();
+                
+            } catch (error) {
+                console.error('Failed to initialize assessment:', error);
+                showError('Failed to generate skill assessment');
+            }
+        }
+
+        // Display the assessment results
+        function displayAssessment(assessment) {
+            // Overall score and experience level
+            document.getElementById('overall-score').textContent = assessment.overallScore;
+            document.getElementById('experience-level').textContent = assessment.experienceLevel?.name || 'Analyzing...';
+            
+            // Set score circle progress
+            const scoreAngle = (assessment.overallScore / 100) * 360;
+            document.getElementById('score-circle').style.setProperty('--score-angle', `${scoreAngle}deg`);
+            
+            // Assessment summary
+            document.getElementById('interview-readiness').textContent = `${assessment.interviewReadiness?.overall || 0}%`;
+            document.getElementById('certifications-earned').textContent = assessment.certifications?.length || 0;
+            document.getElementById('strengths-count').textContent = assessment.strengths?.length || 0;
+            document.getElementById('improvement-areas').textContent = assessment.weaknesses?.length || 0;
+            
+            // Category scores
+            displayCategoryScores(assessment.categoryScores);
+            
+            // Interview readiness
+            displayInterviewReadiness(assessment.interviewReadiness);
+            
+            // Strengths and weaknesses
+            displayStrengthsAndWeaknesses(assessment.strengths, assessment.weaknesses);
+            
+            // Recommendations
+            displayRecommendations(assessment.recommendations);
+            
+            // Certifications
+            displayCertifications(assessment.certifications);
+            
+            // Benchmark comparison
+            displayBenchmarkComparison(assessment.benchmarkComparison);
+        }
+
+        // Display category scores
+        function displayCategoryScores(categoryScores) {
+            const container = document.getElementById('categories-grid');
+            container.innerHTML = '';
+            
+            const categoryNames = {
+                'technical-skills': 'Technical Skills',
+                'problem-solving': 'Problem Solving',
+                'coding-proficiency': 'Coding Proficiency',
+                'communication': 'Communication'
+            };
+            
+            Object.entries(categoryScores).forEach(([category, data]) => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                
+                card.innerHTML = `
+                    <div class="category-name">${categoryNames[category] || category}</div>
+                    <div class="category-score">${Math.round(data.score)}</div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${data.score}%"></div>
+                    </div>
+                    <div class="confidence-badge confidence-${data.confidence}">
+                        ${data.confidence} confidence
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Display interview readiness
+        function displayInterviewReadiness(readiness) {
+            if (!readiness) return;
+            
+            // Company readiness chart
+            const ctx = document.getElementById('readiness-chart').getContext('2d');
+            
+            const companyData = readiness.byCompany || {};
+            const companyLabels = Object.keys(companyData).map(key => {
+                const names = {
+                    'startup': 'Startup',
+                    'big-tech': 'Big Tech',
+                    'enterprise': 'Enterprise',
+                    'consulting': 'Consulting'
+                };
+                return names[key] || key;
+            });
+            const companyScores = Object.values(companyData);
+            
+            readinessChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: companyLabels,
+                    datasets: [{
+                        label: 'Readiness Score',
+                        data: companyScores,
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Role readiness
+            const roleContainer = document.getElementById('role-readiness');
+            roleContainer.innerHTML = '';
+            
+            const roleData = readiness.byRole || {};
+            const roleNames = {
+                'frontend': 'Frontend Developer',
+                'backend': 'Backend Developer',
+                'fullstack': 'Full-Stack Developer',
+                'data-science': 'Data Scientist'
+            };
+            
+            Object.entries(roleData).forEach(([role, score]) => {
+                const item = document.createElement('div');
+                item.className = 'readiness-item';
+                item.innerHTML = `
+                    <span>${roleNames[role] || role}</span>
+                    <span class="readiness-score">${score}%</span>
+                `;
+                roleContainer.appendChild(item);
+            });
+        }
+
+        // Display strengths and weaknesses
+        function displayStrengthsAndWeaknesses(strengths, weaknesses) {
+            // Strengths
+            const strengthsContainer = document.getElementById('strengths-list');
+            strengthsContainer.innerHTML = '';
+            
+            if (strengths && strengths.length > 0) {
+                strengths.slice(0, 8).forEach(strength => {
+                    const item = document.createElement('div');
+                    item.className = 'strength-item';
+                    item.innerHTML = `
+                        <span class="item-name">${strength.description || strength.name}</span>
+                        <span class="strength-score">${Math.round(strength.score)}%</span>
+                    `;
+                    strengthsContainer.appendChild(item);
+                });
+            } else {
+                strengthsContainer.innerHTML = '<p style="color: #666; text-align: center;">Keep practicing to identify your strengths!</p>';
+            }
+            
+            // Weaknesses
+            const weaknessesContainer = document.getElementById('weaknesses-list');
+            weaknessesContainer.innerHTML = '';
+            
+            if (weaknesses && weaknesses.length > 0) {
+                weaknesses.slice(0, 8).forEach(weakness => {
+                    const item = document.createElement('div');
+                    item.className = 'weakness-item';
+                    item.innerHTML = `
+                        <div>
+                            <span class="item-name">${weakness.description || weakness.name}</span>
+                            <span class="severity-badge severity-${weakness.severity}">${weakness.severity}</span>
+                        </div>
+                        <span class="weakness-score">${Math.round(weakness.score)}%</span>
+                    `;
+                    weaknessesContainer.appendChild(item);
+                });
+            } else {
+                weaknessesContainer.innerHTML = '<p style="color: #666; text-align: center;">Great! No major weaknesses identified.</p>';
+            }
+        }
+
+        // Display recommendations
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendations-list');
+            container.innerHTML = '';
+            
+            if (recommendations && recommendations.length > 0) {
+                recommendations.slice(0, 6).forEach(rec => {
+                    const card = document.createElement('div');
+                    card.className = 'recommendation-card';
+                    card.innerHTML = `
+                        <div class="recommendation-title">${rec.title}</div>
+                        <div class="recommendation-description">${rec.description}</div>
+                        <div class="recommendation-meta">
+                            <span class="priority-badge priority-${rec.priority}">${rec.priority} priority</span>
+                            <span class="estimated-time">⏱️ ${rec.estimatedTime}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = '<p style="color: #666; text-align: center;">You\'re doing great! Keep up the excellent work.</p>';
+            }
+        }
+
+        // Display certifications
+        function displayCertifications(certifications) {
+            const container = document.getElementById('certifications-grid');
+            container.innerHTML = '';
+            
+            // Get all certification levels
+            const allCertifications = [
+                { level: 'bronze', name: 'Bronze Certification', badge: '🥉', description: 'Basic programming competency', earned: false },
+                { level: 'silver', name: 'Silver Certification', badge: '🥈', description: 'Intermediate programming skills', earned: false },
+                { level: 'gold', name: 'Gold Certification', badge: '🥇', description: 'Advanced programming expertise', earned: false },
+                { level: 'platinum', name: 'Platinum Certification', badge: '💎', description: 'Expert-level programming mastery', earned: false }
+            ];
+            
+            // Mark earned certifications
+            if (certifications) {
+                certifications.forEach(cert => {
+                    const found = allCertifications.find(c => c.level === cert.level);
+                    if (found) {
+                        found.earned = true;
+                        found.earnedDate = cert.earnedDate;
+                        found.score = cert.score;
+                    }
+                });
+            }
+            
+            allCertifications.forEach(cert => {
+                const card = document.createElement('div');
+                card.className = `certification-card ${cert.earned ? 'earned' : ''}`;
+                card.innerHTML = `
+                    <div class="certification-badge">${cert.badge}</div>
+                    <div class="certification-name">${cert.name}</div>
+                    <div class="certification-description">${cert.description}</div>
+                    ${cert.earned ? `<div style="margin-top: 10px; color: #28a745; font-weight: bold;">✅ Earned!</div>` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Display benchmark comparison
+        function displayBenchmarkComparison(benchmarks) {
+            const container = document.getElementById('benchmark-grid');
+            container.innerHTML = '';
+            
+            if (benchmarks) {
+                Object.entries(benchmarks).forEach(([level, data]) => {
+                    const card = document.createElement('div');
+                    card.className = 'benchmark-card';
+                    
+                    const readinessPercentage = Math.round(data.readiness * 100);
+                    const salaryRange = `$${data.salaryRange.min.toLocaleString()} - $${data.salaryRange.max.toLocaleString()}`;
+                    
+                    card.innerHTML = `
+                        <div class="benchmark-level">${data.name}</div>
+                        <div class="salary-range">${salaryRange}</div>
+                        <div class="readiness-percentage">${readinessPercentage}% Ready</div>
+                        <div class="gap-info">
+                            ${data.categoriesMet}/${data.totalCategories} categories met
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('new-assessment-btn').addEventListener('click', conductNewAssessment);
+            document.getElementById('view-history-btn').addEventListener('click', viewAssessmentHistory);
+            document.getElementById('export-report-btn').addEventListener('click', exportReport);
+        }
+
+        // Conduct new assessment
+        async function conductNewAssessment() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('assessment-content').style.display = 'none';
+                
+                assessmentData = await ipcRenderer.invoke('conduct-skill-assessment');
+                
+                if (assessmentData.dataQuality === 'low' && assessmentData.overallScore === 0) {
+                    showNoDataState();
+                } else {
+                    displayAssessment(assessmentData);
+                    showAssessmentContent();
+                }
+            } catch (error) {
+                console.error('Failed to conduct new assessment:', error);
+                showError('Failed to generate new assessment');
+            }
+        }
+
+        // View assessment history
+        async function viewAssessmentHistory() {
+            try {
+                const history = await ipcRenderer.invoke('get-assessment-history');
+                console.log('Assessment history:', history);
+                // TODO: Implement history view
+                alert('Assessment history feature coming soon!');
+            } catch (error) {
+                console.error('Failed to get assessment history:', error);
+            }
+        }
+
+        // Export report
+        async function exportReport() {
+            try {
+                if (!assessmentData) return;
+                
+                const reportData = {
+                    timestamp: new Date().toISOString(),
+                    assessment: assessmentData
+                };
+                
+                const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `skill-assessment-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Failed to export report:', error);
+            }
+        }
+
+        // Show states
+        function showAssessmentContent() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('no-data').style.display = 'none';
+            document.getElementById('assessment-content').style.display = 'block';
+        }
+
+        function showNoDataState() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('assessment-content').style.display = 'none';
+            document.getElementById('no-data').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('loading').innerHTML = `
+                <h3 style="color: #dc3545;">⚠️ Error</h3>
+                <p>${message}</p>
+                <button class="action-button" onclick="closeWindow()">Close</button>
+            `;
+        }
+
+        // Close window
+        function closeWindow() {
+            window.close();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeAssessment);
+    </script>
+</body>
+</html>
